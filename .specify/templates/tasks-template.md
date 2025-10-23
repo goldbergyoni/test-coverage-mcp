@@ -9,6 +9,8 @@ description: "Task list template for feature implementation"
 
 **Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
 
+**Test Standards** (per constitution): All tests must be self-contained (create their own data/files), mimic user flows in single process, and be under 10 lines by using helper functions.
+
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
 ## Format: `[ID] [P?] [Story] Description`

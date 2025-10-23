@@ -31,7 +31,15 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify compliance with core principles from [constitution.md](../../.specify/memory/constitution.md):
+
+- [ ] **Short, Focused Functions**: Design favors small, single-purpose functions (target <20 lines)
+- [ ] **Proven Dependencies**: All proposed dependencies are well-established and actively maintained
+- [ ] **Simple Tests**: Test plan includes self-contained tests under 10 lines with helpers
+- [ ] **Core Domain Separation**: Architecture separates domain logic from entry points (CLI/API/MCP)
+- [ ] **Linting Compliance**: ESLint will be configured and all code will pass linting
+
+**Complexity Justification**: If any principle is violated, document in Complexity Tracking table below with rationale.
 
 ## Project Structure
 
