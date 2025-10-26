@@ -1,12 +1,37 @@
 {
-  "name": "coverage-mcp-v2",
+  "name": "coverage-mcp",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "MCP server for analyzing test coverage from LCOV files",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "coverage-mcp": "./dist/index.js"
   },
-  "keywords": [],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "mcp",
+    "coverage",
+    "lcov",
+    "testing"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "MIT",
+  "dependencies": {
+    "@friedemannsommer/lcov-parser": "5.0.1",
+    "@modelcontextprotocol/sdk": "1.20.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.38.0",
+    "@faker-js/faker": "^10.1.0",
+    "@types/node": "24.9.1",
+    "eslint": "9.38.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.46.2",
+    "vitest": "4.0.3"
+  }
 }

@@ -58,6 +58,7 @@ All code MUST pass ESLint with default configuration (or project-configured rule
 ### Code Style
 
 - Use ESLint default configuration
+- **Write explicit and simple code** - avoid clever tricks, prefer clarity
 - Prefer explicit over implicit behavior
 - Avoid comments except for complex algorithms (code should be self-documenting through naming and structure)
 - Use descriptive variable and function names that reveal intent
@@ -117,5 +118,9 @@ All code MUST pass ESLint with default configuration (or project-configured rule
 ### Constitutional Authority
 
 This constitution supersedes all other development practices and guidelines. When conflicts arise between this document and other guidance, the constitution takes precedence. Use project-specific documentation (CLAUDE.md, README.md) for runtime development guidance that does not conflict with these principles.
+
+## References
+
+- [LCOV Format Guide](../../src/core/lcov_guide.md) - Detailed explanation of LCOV file format shortcuts and structure
 
 **Version**: 1.0.0 | **Ratified**: 2025-10-22 | **Last Amended**: 2025-10-22

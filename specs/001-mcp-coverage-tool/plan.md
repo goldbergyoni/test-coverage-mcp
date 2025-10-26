@@ -1,71 +1,52 @@
 # Implementation Plan: MCP Coverage Analysis Tool
 
-**Branch**: `001-mcp-coverage-tool` | **Date**: 2025-10-21 | **Spec**: [spec.md](spec.md)
+**Branch**: `001-mcp-coverage-tool` | **Date**: 2025-10-23 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/001-mcp-coverage-tool/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-An MCP (Model Context Protocol) tool that enables AI agents to analyze LCOV code coverage files efficiently without consuming excessive tokens. The tool provides three core capabilities: retrieving overall project coverage, getting coverage for specific files, and tracking coverage changes through snapshots. Implementation uses Node.js with TypeScript and the Anthropic MCP SDK, with a function-based architecture separating MCP entry points from internal logic.
+Build an MCP (Model Context Protocol) tool that enables AI agents to efficiently analyze and track test coverage without consuming excessive tokens. The tool provides commands to get overall project coverage, file-specific coverage, and track coverage changes through recordings.
 
 ## Technical Context
 
-**Language/Version**: Node.js with TypeScript (no interfaces, use types)
-**Primary Dependencies**:
-- @modelcontextprotocol/sdk (Anthropic MCP SDK)
-- @friedemannsommer/lcov-
-- Testing framework: Vitest
-
-**Storage**: File system (temporary storage for snapshots)
-**Testing**: 2-3 integration tests covering full flows, with in-process entry point testing and LCOV test helper for scenario building
-**Target Platform**: Node.js runtime (cross-platform)
-**Project Type**: Single library with MCP server interface
-**Architecture**: Separate the entry-point folder with MCP server and the core logic where lcov is parsed and analyzed
-**Performance Goals**:
-- Parse LCOV files up to 50MB in under 5 seconds
-- Return file-specific coverage using less than 300 tokens per file
-- Snapshot operations complete in under 5 seconds for projects with up to 1000 files
-
-**Constraints**:
-- Function-based architecture only (no classes)
-- Layered design separating MCP entry points from internal logic
-- Token-efficient output format
-- Support both summary-based and line-by-line LCOV formats
-- Keep first version simple (no edge case handling)
-
-**Scale/Scope**: Support projects with up to 1000 files and LCOV files up to 50MB
+**Language/Version**: TypeScript with Node.js (latest LTS)
+**Primary Dependencies**: @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser
+**Storage**: Temporary filesystem storage for coverage recordings
+**Testing**: Vitest for integration tests
+**Target Platform**: Cross-platform Node.js environment
+**Project Type**: single - MCP server tool
+**Performance Goals**: Parse 50MB LCOV files under 5 seconds, respond to commands within 200ms
+**Constraints**: Minimize token consumption in responses (<300 tokens per file), support concurrent recordings
+**Scale/Scope**: Support projects up to 1000 files in coverage reports
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-**Initial Check (Before Phase 0)**:
-- **Status**: No project constitution defined yet (constitution.md contains only template placeholders)
-- **Applicable Principles**: Once constitution is established, verify testing approach, architecture patterns, and simplicity principles
-- **Violations**: None detected - requirements align with standard Node.js/TypeScript best practices
-- **Decision**: PROCEED with Phase 0 research
+Verify compliance with core principles from [constitution.md](../../.specify/memory/constitution.md):
 
-**Post-Design Check (After Phase 1)**:
-- **Architecture Review**: ✓ Function-based design with clear separation of concerns (MCP layer / Core logic / Types)
-- **Testing Strategy**: ✓ Integration tests with test helpers as specified in user requirements
-- **Simplicity**: ✓ V1 design avoids edge cases, focuses on core functionality (line coverage only, no branches/functions)
-- **Type System**: ✓ Uses `type` instead of `interface` throughout (per user requirements)
-- **Dependencies**: ✓ Minimal dependencies (@modelcontextprotocol/sdk, @friedemannsommer/lcov-parser, Zod, Vitest)
-- **Token Efficiency**: ✓ Response formats designed to minimize token usage (JSON structures, numeric values)
+- [x] **Short, Focused Functions**: Design favors small, single-purpose functions (target <20 lines)
+- [x] **Proven Dependencies**: All proposed dependencies are well-established and actively maintained
+  - @modelcontextprotocol/sdk: Official Anthropic SDK
+  - @friedemannsommer/lcov-parser: 600k+ weekly downloads, actively maintained
+- [x] **Simple Tests**: Test plan includes self-contained tests under 10 lines with helpers
+  - Integration tests with LCOV file builder helpers
+  - Tests approach in-process entry point with clear assertions
+- [x] **Core Domain Separation**: Architecture separates domain logic from entry points (CLI/API/MCP)
+  - MCP handlers are thin wrappers forwarding to core logic layer
+  - Core logic in separate internal folder
+- [x] **Linting Compliance**: ESLint will be configured and all code will pass linting
 
-**Violations**: None detected
-
-**Complexity Justification**: Not applicable - no violations requiring justification
-
-**Decision**: PROCEED to Phase 2 (tasks.md generation via /speckit.tasks)
+**Complexity Justification**: If any principle is violated, document in Complexity Tracking table below with rationale.
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```
-specs/[###-feature]/
+specs/001-mcp-coverage-tool/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)
@@ -78,29 +59,31 @@ specs/[###-feature]/
 
 ```
 src/
-├── mcp/                    # MCP entry points - handles MCP protocol
-│   ├── server.ts          # MCP server setup and tool registration
-│   └── handlers.ts        # MCP command handlers (thin layer)
-├── core/                   # Internal logic - pure business logic
-│   ├── parser.ts          # LCOV file parsing logic
-│   ├── coverage.ts        # Coverage calculation functions
-│   └── snapshot.ts        # Snapshot storage and comparison
-└── types/                  # TypeScript type definitions
-    └── coverage.types.ts  # Coverage-related types
+├── mcp/                    # MCP entry point layer (thin adapters)
+│   ├── server.ts          # MCP server initialization
+│   └── handlers.ts        # MCP tool command handlers
+├── core/                  # Core business logic (domain layer)
+│   ├── coverage/
+│   │   ├── parser.ts      # LCOV file parsing logic
+│   │   ├── calculator.ts # Coverage calculation functions
+│   │   └── types.ts       # Domain types (CoverageInfo, etc.)
+│   └── recording/
+│       ├── manager.ts     # Recording lifecycle management
+│       ├── storage.ts     # Recording persistence
+  │       └── comparator.ts  # Coverage delta calculations
+└── index.ts               # Main entry point
 
 tests/
-├── integration/            # 2-3 full flow tests
-│   ├── overall-coverage.test.ts
-│   ├── file-coverage.test.ts
-│   └── snapshot-comparison.test.ts
-└── helpers/               # Testing utilities
-    └── lcov-builder.ts    # LCOV file builder for test scenarios
-
-package.json               # Node.js project configuration
-tsconfig.json             # TypeScript configuration
+├── integration/
+│   ├── coverage.test.ts   # Full coverage workflow tests
+│   ├── recording.test.ts  # Recording lifecycle tests
+│   └── helpers/
+│       └── lcov-builder.ts # Test helper for building LCOV files
+└── fixtures/
+    └── sample-lcov/        # Sample LCOV files for testing
 ```
 
-**Structure Decision**: Single project structure chosen because this is a standalone MCP tool without frontend/backend separation. The layered architecture separates MCP-specific concerns (src/mcp/) from pure business logic (src/core/), following the user requirement for clear separation between entry points and internal logic. Function-based design throughout eliminates the need for models/ directory (no classes).
+**Structure Decision**: Single project structure with clear separation between MCP entry points and core domain logic. The MCP handlers in `src/mcp/` act as thin adapters that forward to the core logic in `src/core/`, ensuring testability without invoking the MCP protocol.
 
 ## Complexity Tracking
 
