@@ -71,4 +71,22 @@ describe('coverage_summary tool', () => {
     // Assert
     expect(result.linesCoveragePercentage).toBe(0);
   });
+
+  it('when lcov path does not exist, then returns error', async () => {
+    // Arrange
+    const nonExistentLcovPath = '/tmp/this-file-definitely-does-not-exist.lcov';
+    const client = await createMCPClient();
+
+    // Act
+    const error = await client.callToolExpectingError('coverage_summary', {
+      lcovPath: nonExistentLcovPath
+    });
+
+    // Assert
+    expect(error).toMatchObject({
+      isError: true,
+      code: 'LCOV_FILE_NOT_FOUND',
+      message: expect.any(String)
+    });
+  });
 });

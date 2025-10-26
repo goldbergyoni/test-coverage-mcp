@@ -15,17 +15,12 @@ type ToolResultMap = {
   end_coverage_record: EndRecordingOutput;
 };
 
-type ToolSuccess<T> = {
-  isError: false;
-  data: T;
-};
-
-type ToolError = {
+type ErrorResult = {
   isError: true;
-  error: string;
+  code: string;
+  message: string;
+  details?: unknown;
 };
-
-type ToolResult<T> = ToolSuccess<T> | ToolError;
 
 type MCPClient = {
   callTool<TName extends keyof ToolResultMap>(
@@ -33,10 +28,10 @@ type MCPClient = {
     args: Record<string, unknown>
   ): Promise<ToolResultMap[TName]>;
 
-  callToolWithError<TName extends keyof ToolResultMap>(
+  callToolExpectingError<TName extends keyof ToolResultMap>(
     name: TName,
     args: Record<string, unknown>
-  ): Promise<ToolResult<ToolResultMap[TName]>>;
+  ): Promise<ErrorResult>;
 };
 
 export const createMCPClient = async (): Promise<MCPClient> => {
@@ -70,25 +65,24 @@ export const createMCPClient = async (): Promise<MCPClient> => {
       return JSON.parse(responseText);
     },
 
-    callToolWithError: async (name, args) => {
+    callToolExpectingError: async (name, args) => {
       const result = await client.callTool({ name: name as string, arguments: args });
 
-      if (result.isError) {
-        const errorText = Array.isArray(result.content) && result.content[0] && 'text' in result.content[0]
-          ? result.content[0].text
-          : 'Unknown error';
-        return {
-          isError: true,
-          error: errorText,
-        };
+      if (!result.isError) {
+        throw new Error('Expected tool to return error, but it succeeded');
       }
 
-      const responseText = Array.isArray(result.content) && result.content[0] && 'text' in result.content[0]
+      const errorText = Array.isArray(result.content) && result.content[0] && 'text' in result.content[0]
         ? result.content[0].text
         : '{}';
+
+      const errorData = JSON.parse(errorText);
+
       return {
-        isError: false,
-        data: JSON.parse(responseText),
+        isError: true,
+        code: errorData.error || 'UNKNOWN_ERROR',
+        message: errorData.message || 'Unknown error',
+        details: errorData.details,
       };
     },
   };
