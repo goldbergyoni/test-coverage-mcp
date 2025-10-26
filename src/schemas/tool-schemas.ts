@@ -18,11 +18,20 @@ export const CoverageSummaryInputSchema = z.object({
   lcovPath: z
     .string()
     .optional()
+    .describe('Path to the LCOV coverage file. Can be absolute or relative. Defaults to ./coverage/lcov.info')
+});
+
+/**
+ * Schema for coverage_file_summary tool input
+ */
+export const CoverageFileSummaryInputSchema = z.object({
+  lcovPath: z
+    .string()
+    .optional()
     .describe('Path to the LCOV coverage file. Can be absolute or relative. Defaults to ./coverage/lcov.info'),
   filePath: z
     .string()
-    .optional()
-    .describe('Optional: Get coverage for a specific file')
+    .describe('File path to get coverage for')
 });
 
 /**
@@ -73,13 +82,14 @@ const FileCoverageInfoSchema = z.object({
 });
 
 /**
- * Schema for coverage_summary tool output
- * Can return overall or single file coverage
+ * Schema for coverage_summary tool output (overall coverage only)
  */
-export const CoverageSummaryOutputSchema = z.union([
-  CoverageInfoSchema, // Overall coverage
-  FileCoverageInfoSchema // Single file coverage
-]);
+export const CoverageSummaryOutputSchema = CoverageInfoSchema;
+
+/**
+ * Schema for coverage_file_summary tool output (single file coverage)
+ */
+export const CoverageFileSummaryOutputSchema = FileCoverageInfoSchema;
 
 /**
  * Schema for start_coverage_record tool output
@@ -133,12 +143,14 @@ export const EndRecordingOutputSchema = z.object({
 // ============================================================================
 
 export type CoverageSummaryInput = z.infer<typeof CoverageSummaryInputSchema>;
+export type CoverageFileSummaryInput = z.infer<typeof CoverageFileSummaryInputSchema>;
 export type StartRecordingInput = z.infer<typeof StartRecordingInputSchema>;
 export type EndRecordingInput = z.infer<typeof EndRecordingInputSchema>;
 
 export type CoverageInfo = z.infer<typeof CoverageInfoSchema>;
 export type FileCoverageInfo = z.infer<typeof FileCoverageInfoSchema>;
 export type CoverageSummaryOutput = z.infer<typeof CoverageSummaryOutputSchema>;
+export type CoverageFileSummaryOutput = z.infer<typeof CoverageFileSummaryOutputSchema>;
 export type StartRecordingOutput = z.infer<typeof StartRecordingOutputSchema>;
 export type EndRecordingOutput = z.infer<typeof EndRecordingOutputSchema>;
 
@@ -151,9 +163,14 @@ export type EndRecordingOutput = z.infer<typeof EndRecordingOutputSchema>;
  */
 export const TOOL_CONFIGS = {
   coverage_summary: {
-    title: 'Get Coverage Summary',
-    description: 'Analyzes an LCOV coverage file and returns line coverage percentage. Can return overall project coverage or coverage for specific files. Use this before making code changes to establish a baseline or after changes to verify impact.',
+    title: 'Get Overall Coverage Summary',
+    description: 'Analyzes an LCOV coverage file and returns overall project line coverage percentage. Use this before making code changes to establish a baseline or after changes to verify impact.',
     inputSchema: CoverageSummaryInputSchema
+  },
+  coverage_file_summary: {
+    title: 'Get File Coverage Summary',
+    description: 'Analyzes an LCOV coverage file and returns line coverage percentage for a specific file. Use this to check coverage for individual files.',
+    inputSchema: CoverageFileSummaryInputSchema
   },
   start_coverage_record: {
     title: 'Start Coverage Recording',
