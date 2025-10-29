@@ -46,7 +46,12 @@ const CoverageInfoSchema = z.object({
     .number()
     .min(0)
     .max(100)
-    .describe('Line coverage percentage (0-100)')
+    .describe('Line coverage percentage (0-100)'),
+  branchesCoveragePercentage: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe('Branch coverage percentage (0-100). Returns 0 if no branch data.')
 });
 
 /**
@@ -68,50 +73,40 @@ export const CoverageSummaryOutputSchema = CoverageInfoSchema;
 export const CoverageFileSummaryOutputSchema = FileCoverageInfoSchema;
 
 /**
- * Schema for start_coverage_record tool output
+ * Schema for start_recording tool input
  */
-export const StartRecordingOutputSchema = z.object({
-  recordingId: z
+export const StartRecordingInputSchema = z.object({
+  lcovPath: z
     .string()
-    .uuid()
-    .describe('Unique identifier for this recording session'),
-  timestamp: z
-    .number()
-    .describe('Unix timestamp in milliseconds when recording was started'),
-  baselineCoverage: CoverageInfoSchema.describe('Overall coverage at recording start')
+    .describe('Absolute or relative path to the LCOV coverage file to record as baseline (e.g., \'coverage/lcov.info\' or \'./coverage.lcov\')')
 });
 
 /**
- * File change info for recording comparison
+ * Schema for start_recording tool output
  */
-const FileChangeSchema = z.object({
-  path: z.string().describe('File path'),
-  beforePercentage: z.number().min(0).max(100).describe('Coverage when recording started'),
-  afterPercentage: z.number().min(0).max(100).describe('Current coverage'),
-  changePercentage: z.number().describe('Percentage point change (can be negative)')
+export const StartRecordingOutputSchema = z
+  .string()
+  .describe('Success message confirming recording started');
+
+/**
+ * Schema for get_diff_since_start tool input
+ */
+export const GetDiffSinceStartInputSchema = z.object({
+  lcovPath: z
+    .string()
+    .describe('Absolute or relative path to the current LCOV coverage file to compare against baseline (e.g., \'coverage/lcov.info\')')
 });
 
 /**
- * Schema for end_coverage_record tool output
+ * Schema for get_diff_since_start tool output
  */
-export const EndRecordingOutputSchema = z.object({
-  before: CoverageInfoSchema.describe('Coverage when recording started'),
-  after: CoverageInfoSchema.describe('Current coverage'),
-  changeInPercentage: z
+export const GetDiffSinceStartOutputSchema = z.object({
+  linesPercentageImpact: z
     .number()
-    .describe('Percentage point change in coverage (can be negative)'),
-  fileChanges: z
-    .array(FileChangeSchema)
-    .optional()
-    .describe('Per-file coverage changes, sorted by largest change first'),
-  newFiles: z
-    .array(z.string())
-    .optional()
-    .describe('Files added to coverage since recording started'),
-  removedFiles: z
-    .array(z.string())
-    .optional()
-    .describe('Files removed from coverage since recording started')
+    .describe('Change in line coverage percentage (current minus baseline). Positive = improvement, negative = regression.'),
+  branchesPercentageImpact: z
+    .number()
+    .describe('Change in branch coverage percentage (current minus baseline). Positive = improvement, negative = regression.')
 });
 
 // ============================================================================
@@ -125,8 +120,11 @@ export type CoverageInfo = z.infer<typeof CoverageInfoSchema>;
 export type FileCoverageInfo = z.infer<typeof FileCoverageInfoSchema>;
 export type CoverageSummaryOutput = z.infer<typeof CoverageSummaryOutputSchema>;
 export type CoverageFileSummaryOutput = z.infer<typeof CoverageFileSummaryOutputSchema>;
+
+export type StartRecordingInput = z.infer<typeof StartRecordingInputSchema>;
 export type StartRecordingOutput = z.infer<typeof StartRecordingOutputSchema>;
-export type EndRecordingOutput = z.infer<typeof EndRecordingOutputSchema>;
+export type GetDiffSinceStartInput = z.infer<typeof GetDiffSinceStartInputSchema>;
+export type GetDiffSinceStartOutput = z.infer<typeof GetDiffSinceStartOutputSchema>;
 
 // ============================================================================
 // Tool Registration Helpers

@@ -5,14 +5,14 @@ import type {
   CoverageSummaryOutput,
   CoverageFileSummaryOutput,
   StartRecordingOutput,
-  EndRecordingOutput,
+  GetDiffSinceStartOutput,
 } from '../../src/schemas/tool-schemas.js';
 
 type ToolResultMap = {
   coverage_summary: CoverageSummaryOutput;
   coverage_file_summary: CoverageFileSummaryOutput;
-  start_coverage_record: StartRecordingOutput;
-  end_coverage_record: EndRecordingOutput;
+  start_recording: StartRecordingOutput;
+  get_diff_since_start: GetDiffSinceStartOutput;
 };
 
 type ErrorResult = {
