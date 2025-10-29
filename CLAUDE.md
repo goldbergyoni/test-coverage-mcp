@@ -6,6 +6,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-21
 - Node.js with TypeScript (no interfaces, use types) (001-mcp-coverage-tool)
 - TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser (001-mcp-coverage-tool)
 - Temporary filesystem storage for coverage recordings (001-mcp-coverage-tool)
+- TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser, Node.js fs module (002-coverage-diff-tracking)
+- Local filesystem (recording folder for snapshots) (002-coverage-diff-tracking)
 
 ## Project Structure
 ```
@@ -20,6 +22,7 @@ npm test && npm run lint
 Node.js with TypeScript (no interfaces, use types): Follow standard conventions
 
 ## Recent Changes
+- 002-coverage-diff-tracking: Added TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser, Node.js fs module
 - 001-mcp-coverage-tool: Added TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser
 - 001-mcp-coverage-tool: Added Node.js with TypeScript (no interfaces, use types)
 

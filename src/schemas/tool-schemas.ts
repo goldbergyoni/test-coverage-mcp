@@ -34,30 +34,6 @@ export const CoverageFileSummaryInputSchema = z.object({
     .describe('File path to get coverage for')
 });
 
-/**
- * Schema for start_coverage_record tool input
- */
-export const StartRecordingInputSchema = z.object({
-  lcovPath: z
-    .string()
-    .optional()
-    .describe('Path to the LCOV coverage file to snapshot. Defaults to ./coverage/lcov.info')
-});
-
-/**
- * Schema for end_coverage_record tool input
- */
-export const EndRecordingInputSchema = z.object({
-  recordingId: z
-    .string()
-    .uuid()
-    .describe('The recording ID returned from start_coverage_record'),
-  lcovPath: z
-    .string()
-    .optional()
-    .describe('Path to the current LCOV coverage file. Defaults to ./coverage/lcov.info')
-});
-
 // ============================================================================
 // Output Schemas
 // ============================================================================
@@ -144,8 +120,6 @@ export const EndRecordingOutputSchema = z.object({
 
 export type CoverageSummaryInput = z.infer<typeof CoverageSummaryInputSchema>;
 export type CoverageFileSummaryInput = z.infer<typeof CoverageFileSummaryInputSchema>;
-export type StartRecordingInput = z.infer<typeof StartRecordingInputSchema>;
-export type EndRecordingInput = z.infer<typeof EndRecordingInputSchema>;
 
 export type CoverageInfo = z.infer<typeof CoverageInfoSchema>;
 export type FileCoverageInfo = z.infer<typeof FileCoverageInfoSchema>;
@@ -172,14 +146,4 @@ export const TOOL_CONFIGS = {
     description: 'Analyzes an LCOV coverage file and returns line coverage percentage for a specific file. Use this to check coverage for individual files.',
     inputSchema: CoverageFileSummaryInputSchema
   },
-  start_coverage_record: {
-    title: 'Start Coverage Recording',
-    description: 'Creates a snapshot of the current coverage state for later comparison. Use this before making code changes to track coverage impact. Returns a recording ID that must be provided to end_coverage_record.',
-    inputSchema: StartRecordingInputSchema
-  },
-  end_coverage_record: {
-    title: 'End Coverage Recording and Compare',
-    description: 'Compares current coverage against a previously created recording and returns the difference. Shows overall coverage change and per-file changes. Use this after making code changes to measure coverage impact.',
-    inputSchema: EndRecordingInputSchema
-  }
 } as const;
