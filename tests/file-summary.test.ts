@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { createMCPClient } from './mcp-client.js';
-import { createLcovFile } from './lcov-builder.js';
+import { createMCPClient } from './helpers/mcp-client.js';
+import { createLcovFile } from './helpers/lcov-builder.js';
 
 describe('coverage_file_summary tool', () => {
   it('when all lines in file are covered, then returns 100%', async () => {

@@ -16,19 +16,19 @@
 
 **Purpose**: Create the complete external shell of the feature with all public APIs, types, test structure, and foundational infrastructure. This allows for review of the interface before implementation.
 
-- [ ] T001 [US1] Create walking skeleton for start_recording tool: add tool schema to src/schemas/tool-schemas.ts with complete input/output schema and error codes
-- [ ] T002 [P] [US2] Create walking skeleton for get_diff_since_start tool: add tool schema to src/schemas/tool-schemas.ts with complete input/output schema and error codes
-- [ ] T003 [P] [US1] Create recorder module stub in src/core/coverage/recorder.ts with exported function signatures (recordSnapshot, snapshotExists) that throw "Not implemented"
-- [ ] T004 [P] [US2] Create diff-calculator module stub in src/core/coverage/diff-calculator.ts with exported function signature (calculateDiffSinceRecording) that throws "Not implemented"
-- [ ] T005 [P] [US3] Enhance calculator types in src/core/coverage/calculator.ts: update CoverageMetrics type to include branchesCoveragePercentage field
-- [ ] T006 [US1] Add start_recording handler stub to src/mcp/handlers.ts that calls recordSnapshot (throws "Not implemented")
-- [ ] T007 [US2] Add get_diff_since_start handler stub to src/mcp/handlers.ts that calls calculateDiffSinceRecording (throws "Not implemented")
-- [ ] T008 Register both new tools in src/mcp/server.ts with schemas from tool-schemas.ts
-- [ ] T009 Create recording folder structure: ensure recording/ directory exists at project root
-- [ ] T010 [P] Add CoverageDiffInfo type to src/core/coverage/types.ts (linesPercentageImpact, branchesPercentageImpact)
-- [ ] T011 [P] Add error codes to src/core/errors.ts: NO_RECORDING_FOUND error type
-- [ ] T012 [P] Create helper function in src/core/coverage/calculator.ts to extract branch coverage from parsed LCOV data
-- [ ] T013 Create complete test suite in tests/diff-tracking.test.ts with REAL assertions (TDD - tests will fail until implementation): record baseline (success, replacement), get diff (positive/negative/zero impact, no recording error, missing LCOV error), branch coverage included in results. Group scenarios with describe blocks
+- [X] T001 [US1] Create walking skeleton for start_recording tool: add tool schema to src/schemas/tool-schemas.ts with complete input/output schema and error codes
+- [X] T002 [P] [US2] Create walking skeleton for get_diff_since_start tool: add tool schema to src/schemas/tool-schemas.ts with complete input/output schema and error codes
+- [X] T003 [P] [US1] Create recorder module stub in src/core/coverage/recorder.ts with exported function signatures (recordSnapshot, snapshotExists) that throw "Not implemented"
+- [X] T004 [P] [US2] Create diff-calculator module stub in src/core/coverage/diff-calculator.ts with exported function signature (calculateDiffSinceRecording) that throws "Not implemented"
+- [X] T005 [P] [US3] Enhance calculator types in src/core/coverage/calculator.ts: update CoverageMetrics type to include branchesCoveragePercentage field
+- [X] T006 [US1] Add start_recording handler stub to src/mcp/handlers.ts that calls recordSnapshot (throws "Not implemented")
+- [X] T007 [US2] Add get_diff_since_start handler stub to src/mcp/handlers.ts that calls calculateDiffSinceRecording (throws "Not implemented")
+- [X] T008 Register both new tools in src/mcp/server.ts with schemas from tool-schemas.ts
+- [X] T009 Create recording folder structure: ensure recording/ directory exists at project root
+- [X] T010 [P] Add CoverageDiffInfo type to src/core/coverage/types.ts (linesPercentageImpact, branchesPercentageImpact)
+- [X] T011 [P] Add error codes to src/core/errors.ts: NO_RECORDING_FOUND error type
+- [X] T012 [P] Create helper function in src/core/coverage/calculator.ts to extract branch coverage from parsed LCOV data
+- [X] T013 Create complete test suite in tests/diff-tracking.test.ts with REAL assertions (TDD - tests will fail until implementation): record baseline (success, replacement), get diff (positive/negative/zero impact, no recording error, missing LCOV error), branch coverage included in results. Group scenarios with describe blocks
 
 **Checkpoint**: Walking skeleton complete - all external APIs, types, foundational infrastructure, and test structure defined. Ready for review before implementation.
 

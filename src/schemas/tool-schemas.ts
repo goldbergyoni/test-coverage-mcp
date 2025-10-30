@@ -39,9 +39,9 @@ export const CoverageFileSummaryInputSchema = z.object({
 // ============================================================================
 
 /**
- * Basic coverage info structure
+ * Schema for coverage_summary tool response (overall coverage only)
  */
-const CoverageInfoSchema = z.object({
+export const CoverageSummaryResponseSchema = z.object({
   linesCoveragePercentage: z
     .number()
     .min(0)
@@ -55,22 +55,21 @@ const CoverageInfoSchema = z.object({
 });
 
 /**
- * File coverage info structure
+ * Schema for coverage_file_summary tool response (single file coverage)
  */
-const FileCoverageInfoSchema = z.object({
+export const CoverageFileSummaryResponseSchema = z.object({
   path: z.string().describe('File path'),
-  coverageInfo: CoverageInfoSchema
+  linesCoveragePercentage: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe('Line coverage percentage (0-100)'),
+  branchesCoveragePercentage: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe('Branch coverage percentage (0-100). Returns 0 if no branch data.')
 });
-
-/**
- * Schema for coverage_summary tool output (overall coverage only)
- */
-export const CoverageSummaryOutputSchema = CoverageInfoSchema;
-
-/**
- * Schema for coverage_file_summary tool output (single file coverage)
- */
-export const CoverageFileSummaryOutputSchema = FileCoverageInfoSchema;
 
 /**
  * Schema for start_recording tool input
@@ -82,9 +81,9 @@ export const StartRecordingInputSchema = z.object({
 });
 
 /**
- * Schema for start_recording tool output
+ * Schema for start_recording tool response
  */
-export const StartRecordingOutputSchema = z
+export const StartRecordingResponseSchema = z
   .string()
   .describe('Success message confirming recording started');
 
@@ -98,9 +97,9 @@ export const GetDiffSinceStartInputSchema = z.object({
 });
 
 /**
- * Schema for get_diff_since_start tool output
+ * Schema for get_diff_since_start tool response
  */
-export const GetDiffSinceStartOutputSchema = z.object({
+export const GetDiffSinceStartResponseSchema = z.object({
   linesPercentageImpact: z
     .number()
     .describe('Change in line coverage percentage (current minus baseline). Positive = improvement, negative = regression.'),
@@ -115,16 +114,13 @@ export const GetDiffSinceStartOutputSchema = z.object({
 
 export type CoverageSummaryInput = z.infer<typeof CoverageSummaryInputSchema>;
 export type CoverageFileSummaryInput = z.infer<typeof CoverageFileSummaryInputSchema>;
-
-export type CoverageInfo = z.infer<typeof CoverageInfoSchema>;
-export type FileCoverageInfo = z.infer<typeof FileCoverageInfoSchema>;
-export type CoverageSummaryOutput = z.infer<typeof CoverageSummaryOutputSchema>;
-export type CoverageFileSummaryOutput = z.infer<typeof CoverageFileSummaryOutputSchema>;
-
 export type StartRecordingInput = z.infer<typeof StartRecordingInputSchema>;
-export type StartRecordingOutput = z.infer<typeof StartRecordingOutputSchema>;
 export type GetDiffSinceStartInput = z.infer<typeof GetDiffSinceStartInputSchema>;
-export type GetDiffSinceStartOutput = z.infer<typeof GetDiffSinceStartOutputSchema>;
+
+export type CoverageSummaryResponse = z.infer<typeof CoverageSummaryResponseSchema>;
+export type CoverageFileSummaryResponse = z.infer<typeof CoverageFileSummaryResponseSchema>;
+export type StartRecordingResponse = z.infer<typeof StartRecordingResponseSchema>;
+export type GetDiffSinceStartResponse = z.infer<typeof GetDiffSinceStartResponseSchema>;
 
 // ============================================================================
 // Tool Registration Helpers
@@ -143,5 +139,15 @@ export const TOOL_CONFIGS = {
     title: 'Get File Coverage Summary',
     description: 'Analyzes an LCOV coverage file and returns line coverage percentage for a specific file. Use this to check coverage for individual files.',
     inputSchema: CoverageFileSummaryInputSchema
+  },
+  start_recording: {
+    title: 'Start Recording Coverage Baseline',
+    description: 'Records the current coverage as a baseline snapshot. Use this before making code changes to later compare against.',
+    inputSchema: StartRecordingInputSchema
+  },
+  get_diff_since_start: {
+    title: 'Get Coverage Diff Since Recording',
+    description: 'Compares current coverage against the recorded baseline and returns the impact (positive or negative). Use this after making changes to see coverage impact.',
+    inputSchema: GetDiffSinceStartInputSchema
   },
 } as const;
