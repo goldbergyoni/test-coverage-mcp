@@ -21,6 +21,27 @@ npm test && npm run lint
 ## Code Style
 Node.js with TypeScript (no interfaces, use types): Follow standard conventions
 
+## Architecture Principles
+
+### Entry Point Layer (MCP/CLI/API)
+Entry points are **thin adapters** that do ONLY:
+1. **Input validation** (via Zod schemas - validation happens implicitly during parsing)
+2. **Single core function call** - delegate to exactly ONE core function
+3. **Response formatting** - convert core result to protocol format (e.g., MCP response)
+
+Entry points MUST NOT:
+- Orchestrate multiple core functions
+- Perform file operations
+- Execute calculations or business logic
+- Contain any domain knowledge
+
+### Core Layer (src/core/)
+All business logic, orchestration, file operations, and calculations live here:
+- **Orchestration functions** coordinate multiple lower-level operations
+- **Domain logic** implements business rules and calculations
+- **File operations** handle all filesystem access
+- Core functions are protocol-agnostic and independently testable
+
 ## Recent Changes
 - 002-coverage-diff-tracking: Added TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser, Node.js fs module
 - 001-mcp-coverage-tool: Added TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser

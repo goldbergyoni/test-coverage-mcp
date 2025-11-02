@@ -41,9 +41,12 @@ Verify compliance with core principles from [constitution.md](../../.specify/mem
   - 8 focused tests covering key scenarios (not exhaustive edge cases)
 
 - [x] **Core Domain Separation**: Architecture separates domain logic from entry points (CLI/API/MCP)
+  - Core orchestration functions in src/core/coverage/ (e.g., getOverallCoverageSummary, getFileCoverageSummary)
   - Core logic in src/core/coverage/recorder.ts (snapshot management)
   - Core logic in src/core/coverage/diff-calculator.ts (diff computation)
-  - MCP handlers in src/mcp/handlers.ts (thin adapters)
+  - MCP handlers in src/mcp/handlers.ts call exactly ONE core function each
+  - MCP handlers do ONLY: input validation (Zod) → single core call → response formatting
+  - MCP handlers do NOT orchestrate, perform file operations, or contain business logic
   - Domain code independent of MCP protocol
 
 - [x] **Linting Compliance**: ESLint will be configured and all code will pass linting

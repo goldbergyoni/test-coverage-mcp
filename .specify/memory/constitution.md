@@ -36,9 +36,19 @@ Test code MUST mimic real user flows in a single process. Tests create their own
 
 ### IV. Core Domain Separation
 
-Core business logic and domain models MUST be separated from entry points (CLI, API, MCP handlers). Entry points act as thin adapters that translate external protocols into domain operations. Domain code MUST NOT depend on framework-specific or protocol-specific code.
+Core business logic and domain models MUST be separated from entry points (CLI, API, MCP handlers). Entry points act as thin adapters that do ONLY two things:
+1. Input validation (via Zod schemas or equivalent)
+2. Delegation to a SINGLE core function
 
-**Rationale**: Separation enables testing core logic without invoking entry points, allows switching protocols or interfaces without rewriting business logic, and prevents framework lock-in. Domain logic remains pure and reusable.
+Entry points MUST NOT:
+- Orchestrate multiple core functions
+- Perform file operations
+- Execute calculations or business logic
+- Contain any domain knowledge
+
+All orchestration, file operations, calculations, and business logic MUST live in the core layer. Domain code MUST NOT depend on framework-specific or protocol-specific code.
+
+**Rationale**: Separation enables testing core logic without invoking entry points, allows switching protocols or interfaces without rewriting business logic, and prevents framework lock-in. Domain logic remains pure and reusable. Limiting entry points to validation and single-function delegation ensures they remain truly thin and maintainable.
 
 ### V. Linting Compliance
 

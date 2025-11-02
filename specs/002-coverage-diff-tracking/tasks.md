@@ -40,11 +40,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T014 [P] [US1] Implement snapshot creation in src/core/coverage/recorder.ts: recordSnapshot function copies LCOV to recording/last-recording.lcov
-- [ ] T015 [P] [US1] Implement snapshot deletion in src/core/coverage/recorder.ts: delete existing snapshot before creating new one
-- [ ] T016 [P] [US1] Implement snapshot existence check in src/core/coverage/recorder.ts: snapshotExists function
-- [ ] T017 [US1] Update start_recording handler in src/mcp/handlers.ts: implement full logic calling recordSnapshot
-- [ ] T018 [US1] Add error handling in start_recording handler for LCOV_FILE_NOT_FOUND and INVALID_LCOV_FORMAT
+- [X] T014 [P] [US1] Implement snapshot creation in src/core/coverage/recorder.ts: recordSnapshot function copies LCOV to recording/last-recording.lcov
+- [X] T015 [P] [US1] Implement snapshot deletion in src/core/coverage/recorder.ts: delete existing snapshot before creating new one
+- [X] T016 [P] [US1] Implement snapshot existence check in src/core/coverage/recorder.ts: snapshotExists function
+- [X] T017 [US1] Update start_recording handler in src/mcp/handlers.ts: implement full logic calling recordSnapshot
+- [X] T018 [US1] Add error handling in start_recording handler for LCOV_FILE_NOT_FOUND and INVALID_LCOV_FORMAT
 
 **Checkpoint**: Recording tests pass in tests/diff-tracking.test.ts - confirm recording scenarios (success, replacement) pass with npm test
 
@@ -56,11 +56,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T019 [P] [US2] Implement snapshot reading in src/core/coverage/recorder.ts: readSnapshot function reads and parses recording/last-recording.lcov
-- [ ] T020 [P] [US2] Implement diff calculation in src/core/coverage/diff-calculator.ts: calculateDiffSinceRecording compares current vs snapshot
-- [ ] T021 [P] [US2] Enhance calculator to compute branch coverage percentage in src/core/coverage/calculator.ts: use extractBranchCoverage helper
-- [ ] T022 [US2] Update get_diff_since_start handler in src/mcp/handlers.ts: implement full logic calling calculateDiffSinceRecording
-- [ ] T023 [US2] Add error handling in get_diff_since_start handler for NO_RECORDING_FOUND, LCOV_FILE_NOT_FOUND, INVALID_LCOV_FORMAT
+- [X] T019 [P] [US2] Implement snapshot reading in src/core/coverage/recorder.ts: readSnapshot function reads and parses recording/last-recording.lcov
+- [X] T020 [P] [US2] Implement diff calculation in src/core/coverage/diff-calculator.ts: calculateDiffSinceRecording compares current vs snapshot
+- [X] T021 [P] [US2] Enhance calculator to compute branch coverage percentage in src/core/coverage/calculator.ts: use extractBranchCoverage helper
+- [X] T022 [US2] Update get_diff_since_start handler in src/mcp/handlers.ts: implement full logic calling calculateDiffSinceRecording
+- [X] T023 [US2] Add error handling in get_diff_since_start handler for NO_RECORDING_FOUND, LCOV_FILE_NOT_FOUND, INVALID_LCOV_FORMAT
 
 **Checkpoint**: Diff calculation tests pass in tests/diff-tracking.test.ts - confirm diff scenarios (positive/negative/zero impact, no recording error, missing LCOV error) pass with npm test
 
@@ -72,10 +72,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T024 [P] [US3] Enhance calculateProjectCoverage in src/core/coverage/calculator.ts: return both linesCoveragePercentage and branchesCoveragePercentage
-- [ ] T025 [P] [US3] Enhance calculateFileCoverage in src/core/coverage/calculator.ts: return both metrics for specific files
-- [ ] T026 [US3] Update coverage_summary handler in src/mcp/handlers.ts to return enhanced metrics
-- [ ] T027 [US3] Update file_coverage handler in src/mcp/handlers.ts to return enhanced metrics
+- [X] T024 [US3]     Create the walking skeleton for user story 3 where you only enhance the types, the schemas, the testing, write a little more testing that includes a branch coverage, and that's it, no implementation.
+- [X] T025 [P] [US3] Enhance calculateProjectCoverage in src/core/coverage/calculator.ts: return both linesCoveragePercentage and branchesCoveragePercentage
+- [X] T026 [P] [US3] Enhance calculateFileCoverage in src/core/coverage/calculator.ts: return both metrics for specific files
+- [X] T027 [US3] Update coverage_summary handler in src/mcp/handlers.ts to return enhanced metrics
+- [X] T028 [US3] Update file_coverage handler in src/mcp/handlers.ts to return enhanced metrics
 
 **Checkpoint**: Branch coverage tests pass - update tests for coverage_summary and file_coverage tools to verify branchesCoveragePercentage field is present and correct, confirm with npm test
 

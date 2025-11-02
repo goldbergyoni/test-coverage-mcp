@@ -6,14 +6,24 @@ export type CoverageErrorCode =
   | 'INVALID_RECORDING_ID'
   | 'PATH_RESOLUTION_ERROR';
 
-export type CoverageError = {
+export class CoverageError extends Error {
   code: CoverageErrorCode;
-  message: string;
   details?: unknown;
-};
+
+  constructor(code: CoverageErrorCode, message: string, details?: unknown) {
+    super(message);
+    this.name = 'CoverageError';
+    this.code = code;
+    this.details = details;
+  }
+}
 
 export type ErrorResponse = {
-  error: CoverageError;
+  error: {
+    code: CoverageErrorCode;
+    message: string;
+    details?: unknown;
+  };
   timestamp: number;
 };
 
@@ -21,8 +31,4 @@ export const createError = (
   code: CoverageErrorCode,
   message: string,
   details?: unknown
-): CoverageError => ({
-  code,
-  message,
-  details,
-});
+): CoverageError => new CoverageError(code, message, details);

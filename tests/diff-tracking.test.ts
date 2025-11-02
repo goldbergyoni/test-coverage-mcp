@@ -9,7 +9,7 @@ beforeEach(async () => {
 
 describe('Coverage diff tracking - start recording', () => {
   describe('When recording successfully', () => {
-    test('recording baseline for the first time returns success message', async () => {
+    test('when recording baseline for the first time, then returns success message', async () => {
       // Arrange
       const lcovPath = await createDefaultLcovFile();
       const client = await createMCPClient();
@@ -21,7 +21,7 @@ describe('Coverage diff tracking - start recording', () => {
       expect(result).toBe('Recording started');
     });
 
-    test('recording baseline again replaces previous recording', async () => {
+    test('when recording baseline again, then replaces previous recording', async () => {
       // Arrange
       const firstLcovPath = await createLcovFile([
         { lines: 3, coveredLines: [1, 2] }
@@ -41,7 +41,7 @@ describe('Coverage diff tracking - start recording', () => {
   });
 
   describe('When recording fails', () => {
-    test('lcov file does not exist returns LCOV_FILE_NOT_FOUND error', async () => {
+    test('when lcov file does not exist, then returns LCOV_FILE_NOT_FOUND error', async () => {
       // Arrange
       const nonExistentPath = generateNonExistentPath();
       const client = await createMCPClient();
@@ -61,7 +61,7 @@ describe('Coverage diff tracking - start recording', () => {
 
 describe('Coverage diff tracking - get diff since start', () => {
   describe('When coverage improves', () => {
-    test('line coverage improves from 50% to 100% returns positive linesPercentageImpact', async () => {
+    test('when line coverage improves from 50% to 100%, then returns positive linesPercentageImpact', async () => {
       // Arrange
       const baselineLcov = await createLcovFile([
         { lines: 4, coveredLines: [1, 2], branches: 2, coveredBranches: [1] }
@@ -82,7 +82,7 @@ describe('Coverage diff tracking - get diff since start', () => {
       });
     });
 
-    test('branch coverage improves from 50% to 100% returns positive branchesPercentageImpact', async () => {
+    test('when branch coverage improves from 50% to 100%, then returns positive branchesPercentageImpact', async () => {
       // Arrange
       const baselineLcov = await createLcovFile([
         { lines: 3, coveredLines: [1, 2], branches: 4, coveredBranches: [1, 2] }
@@ -103,7 +103,7 @@ describe('Coverage diff tracking - get diff since start', () => {
       });
     });
 
-    test('both line and branch coverage improve returns positive impact for both', async () => {
+    test('when both line and branch coverage improve, then returns positive impact for both', async () => {
       // Arrange
       const baselineLcov = await createLcovFile([
         { lines: 4, coveredLines: [1, 2], branches: 4, coveredBranches: [1, 2] }
@@ -126,7 +126,7 @@ describe('Coverage diff tracking - get diff since start', () => {
   });
 
   describe('When coverage decreases', () => {
-    test('line coverage decreases from 75% to 50% returns negative linesPercentageImpact', async () => {
+    test('when line coverage decreases from 75% to 50%, then returns negative linesPercentageImpact', async () => {
       // Arrange
       const baselineLcov = await createLcovFile([
         { lines: 4, coveredLines: [1, 2, 3], branches: 4, coveredBranches: [1, 2, 3, 4] }
@@ -147,7 +147,7 @@ describe('Coverage diff tracking - get diff since start', () => {
       });
     });
 
-    test('branch coverage decreases from 100% to 25% returns negative branchesPercentageImpact', async () => {
+    test('when branch coverage decreases from 100% to 25%, then returns negative branchesPercentageImpact', async () => {
       // Arrange
       const baselineLcov = await createLcovFile([
         { lines: 3, coveredLines: [1, 2], branches: 4, coveredBranches: [1, 2, 3, 4] }
@@ -170,7 +170,7 @@ describe('Coverage diff tracking - get diff since start', () => {
   });
 
   describe('When coverage stays the same', () => {
-    test('coverage remains unchanged returns zero impact for both metrics', async () => {
+    test('when coverage remains unchanged, then returns zero impact for both metrics', async () => {
       // Arrange
       const baselineLcov = await createLcovFile([
         { lines: 3, coveredLines: [1, 2], branches: 4, coveredBranches: [1, 2] }
@@ -193,7 +193,7 @@ describe('Coverage diff tracking - get diff since start', () => {
   });
 
   describe('When handling special branch cases', () => {
-    test('baseline has no branches returns branchesPercentageImpact of 0', async () => {
+    test('when baseline has no branches, then returns branchesPercentageImpact of 0', async () => {
       // Arrange
       const baselineLcov = await createLcovFile([
         { lines: 3, coveredLines: [1, 2] }
@@ -216,7 +216,7 @@ describe('Coverage diff tracking - get diff since start', () => {
   });
 
   describe('When diff calculation fails', () => {
-    test('no recording exists returns NO_RECORDING_FOUND error', async () => {
+    test('when no recording exists, then returns NO_RECORDING_FOUND error', async () => {
       // Arrange
       const lcovPath = await createDefaultLcovFile();
       const client = await createMCPClient();
@@ -232,7 +232,7 @@ describe('Coverage diff tracking - get diff since start', () => {
       });
     });
 
-    test('current lcov file does not exist returns LCOV_FILE_NOT_FOUND error', async () => {
+    test('when current lcov file does not exist, then returns LCOV_FILE_NOT_FOUND error', async () => {
       // Arrange
       const baselineLcov = await createDefaultLcovFile();
       const client = await createMCPClient();

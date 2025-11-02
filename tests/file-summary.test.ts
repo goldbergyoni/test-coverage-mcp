@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+ import { describe, it, expect } from 'vitest';
 import { createMCPClient } from './helpers/mcp-client.js';
 import { createLcovFile } from './helpers/lcov-builder.js';
 
@@ -87,6 +87,46 @@ describe('coverage_file_summary tool', () => {
     expect(result).toMatchObject({
       path: 'src/notfound.ts',
       coverageInfo: { linesCoveragePercentage: 0 }
+    });
+  });
+
+  it('when file has both line and branch coverage, then returns both metrics', async () => {
+    const lcovPath = await createLcovFile([
+      { path: 'src/main.ts', lines: 4, coveredLines: [1, 2, 3], branches: 4, coveredBranches: [1, 2] }
+    ]);
+    const client = await createMCPClient();
+
+    const result = await client.callTool('coverage_file_summary', {
+      lcovPath,
+      filePath: 'src/main.ts'
+    });
+
+    expect(result).toMatchObject({
+      path: 'src/main.ts',
+      coverageInfo: {
+        linesCoveragePercentage: 75,
+        branchesCoveragePercentage: 50
+      }
+    });
+  });
+
+  it('when file has no branch data, then returns 0 for branchesCoveragePercentage', async () => {
+    const lcovPath = await createLcovFile([
+      { path: 'src/utils.ts', lines: 4, coveredLines: [1, 2] }
+    ]);
+    const client = await createMCPClient();
+
+    const result = await client.callTool('coverage_file_summary', {
+      lcovPath,
+      filePath: 'src/utils.ts'
+    });
+
+    expect(result).toMatchObject({
+      path: 'src/utils.ts',
+      coverageInfo: {
+        linesCoveragePercentage: 50,
+        branchesCoveragePercentage: 0
+      }
     });
   });
 

@@ -31,61 +31,22 @@ export const createServer = (): Server => {
       {
         name: 'coverage_summary',
         description: TOOL_CONFIGS.coverage_summary.description,
-        inputSchema: {
-          type: 'object',
-          properties: {
-            lcovPath: {
-              type: 'string',
-              description: 'Path to the LCOV coverage file. Can be absolute or relative. Defaults to ./coverage/lcov.info',
-            },
-          },
-        },
+      inputSchema: CoverageSummaryInputSchema,
       },
       {
         name: 'coverage_file_summary',
         description: TOOL_CONFIGS.coverage_file_summary.description,
-        inputSchema: {
-          type: 'object',
-          properties: {
-            lcovPath: {
-              type: 'string',
-              description: 'Path to the LCOV coverage file. Can be absolute or relative. Defaults to ./coverage/lcov.info',
-            },
-            filePath: {
-              type: 'string',
-              description: 'File path to get coverage for',
-            },
-          },
-          required: ['filePath'],
-        },
+        inputSchema: CoverageFileSummaryInputSchema,
       },
       {
         name: 'start_recording',
         description: TOOL_CONFIGS.start_recording.description,
-        inputSchema: {
-          type: 'object',
-          properties: {
-            lcovPath: {
-              type: 'string',
-              description: 'Absolute or relative path to the LCOV coverage file to record as baseline',
-            },
-          },
-          required: ['lcovPath'],
-        },
+        inputSchema: StartRecordingInputSchema,
       },
       {
         name: 'get_diff_since_start',
         description: TOOL_CONFIGS.get_diff_since_start.description,
-        inputSchema: {
-          type: 'object',
-          properties: {
-            lcovPath: {
-              type: 'string',
-              description: 'Absolute or relative path to the current LCOV coverage file to compare against baseline',
-            },
-          },
-          required: ['lcovPath'],
-        },
+        inputSchema: GetDiffSinceStartInputSchema,
       },
     ],
   }));
