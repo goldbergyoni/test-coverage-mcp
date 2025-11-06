@@ -34,14 +34,14 @@ Ask for overall project coverage or coverage for specific files:
 
 ```typescript
 // Get overall project coverage
-coverage_summary({ lcovPath: "./coverage/lcov.info" })
+coverage_summary({ lcovPath: "./coverage/lcov.info" });
 // Returns: { linesCoveragePercentage: 87.5, branchesCoveragePercentage: 82.1 }
 
 // Get coverage for specific files
 coverage_file_summary({
   lcovPath: "./coverage/lcov.info",
-  filePath: "src/utils/parser.ts"
-})
+  filePath: "src/utils/parser.ts",
+});
 // Returns: { path: "src/utils/parser.ts", linesCoveragePercentage: 92.0, branchesCoveragePercentage: 88.5 }
 ```
 
@@ -51,13 +51,13 @@ Establish a baseline at session start, then measure your progress:
 
 ```typescript
 // At session start - record current coverage as baseline
-start_recording({ lcovPath: "./coverage/lcov.info" })
+start_recording({ lcovPath: "./coverage/lcov.info" });
 // Returns: "Recording started"
 
 // ... agent writes code and tests ...
 
 // Check coverage impact
-get_diff_since_start({ lcovPath: "./coverage/lcov.info" })
+get_diff_since_start({ lcovPath: "./coverage/lcov.info" });
 // Returns: { linesPercentageImpact: +2.3, branchesPercentageImpact: +1.8 }
 ```
 
@@ -149,6 +149,7 @@ Or use the GUI: Settings → Advanced Settings → Cascade → Add Server
 Get overall project coverage from an LCOV file.
 
 **Input:**
+
 ```typescript
 {
   lcovPath?: string  // Optional. Defaults to "./coverage/lcov.info"
@@ -156,6 +157,7 @@ Get overall project coverage from an LCOV file.
 ```
 
 **Output:**
+
 ```typescript
 {
   linesCoveragePercentage: number,      // 0-100
@@ -164,8 +166,9 @@ Get overall project coverage from an LCOV file.
 ```
 
 **Example:**
+
 ```typescript
-coverage_summary({ lcovPath: "./coverage/lcov.info" })
+coverage_summary({ lcovPath: "./coverage/lcov.info" });
 // { linesCoveragePercentage: 87.5, branchesCoveragePercentage: 82.1 }
 ```
 
@@ -174,6 +177,7 @@ coverage_summary({ lcovPath: "./coverage/lcov.info" })
 Get coverage for a specific file.
 
 **Input:**
+
 ```typescript
 {
   lcovPath?: string,  // Optional. Defaults to "./coverage/lcov.info"
@@ -182,6 +186,7 @@ Get coverage for a specific file.
 ```
 
 **Output:**
+
 ```typescript
 {
   path: string,
@@ -191,11 +196,12 @@ Get coverage for a specific file.
 ```
 
 **Example:**
+
 ```typescript
 coverage_file_summary({
   lcovPath: "./coverage/lcov.info",
-  filePath: "src/utils/parser.ts"
-})
+  filePath: "src/utils/parser.ts",
+});
 // { path: "src/utils/parser.ts", linesCoveragePercentage: 92.0, branchesCoveragePercentage: 88.5 }
 ```
 
@@ -204,20 +210,23 @@ coverage_file_summary({
 Record current coverage as a baseline for later comparison.
 
 **Input:**
+
 ```typescript
 {
-  lcovPath: string  // Required. Path to LCOV file to record
+  lcovPath: string; // Required. Path to LCOV file to record
 }
 ```
 
 **Output:**
+
 ```typescript
-"Recording started"
+"Recording started";
 ```
 
 **Example:**
+
 ```typescript
-start_recording({ lcovPath: "./coverage/lcov.info" })
+start_recording({ lcovPath: "./coverage/lcov.info" });
 // "Recording started"
 ```
 
@@ -226,13 +235,15 @@ start_recording({ lcovPath: "./coverage/lcov.info" })
 Compare current coverage against the recorded baseline.
 
 **Input:**
+
 ```typescript
 {
-  lcovPath: string  // Required. Path to current LCOV file
+  lcovPath: string; // Required. Path to current LCOV file
 }
 ```
 
 **Output:**
+
 ```typescript
 {
   linesPercentageImpact: number,      // Positive = improvement, negative = regression
@@ -241,8 +252,9 @@ Compare current coverage against the recorded baseline.
 ```
 
 **Example:**
+
 ```typescript
-get_diff_since_start({ lcovPath: "./coverage/lcov.info" })
+get_diff_since_start({ lcovPath: "./coverage/lcov.info" });
 // { linesPercentageImpact: +2.3, branchesPercentageImpact: +1.8 }
 ```
 
@@ -299,15 +311,18 @@ This server supports all standard LCOV file formats, including:
 ## Troubleshooting
 
 ### "LCOV file not found"
+
 - Ensure you've run your test suite with coverage enabled first
 - Check that the path to your LCOV file is correct (relative paths are resolved from current working directory)
 - Default path is `./coverage/lcov.info`
 
 ### "No coverage data found for file"
+
 - Verify the file path matches exactly as it appears in the LCOV file
 - Some test frameworks use absolute paths, others use relative paths
 
 ### "No baseline recording found"
+
 - You must call `start_recording` before calling `get_diff_since_start`
 - Baselines are stored in temporary storage and cleared when the system restarts
 
