@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "inspect": "npx @modelcontextprotocol/inspector node dist/index.js"
   },
   "keywords": [
     "mcp",
@@ -24,7 +25,8 @@
   "license": "MIT",
   "dependencies": {
     "@friedemannsommer/lcov-parser": "5.0.1",
-    "@modelcontextprotocol/sdk": "1.20.2"
+    "@modelcontextprotocol/sdk": "1.20.2",
+    "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {
     "@eslint/js": "9.38.0",

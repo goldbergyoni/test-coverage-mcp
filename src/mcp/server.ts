@@ -4,6 +4,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import { handleCoverageSummary, handleFileCoverageSummary, handleStartRecording, handleGetDiffSinceStart } from './handlers.js';
 import {
   CoverageSummaryInputSchema,
@@ -31,22 +32,22 @@ export const createServer = (): Server => {
       {
         name: 'coverage_summary',
         description: TOOL_CONFIGS.coverage_summary.description,
-      inputSchema: CoverageSummaryInputSchema,
+        inputSchema: zodToJsonSchema(CoverageSummaryInputSchema),
       },
       {
         name: 'coverage_file_summary',
         description: TOOL_CONFIGS.coverage_file_summary.description,
-        inputSchema: CoverageFileSummaryInputSchema,
+        inputSchema: zodToJsonSchema(CoverageFileSummaryInputSchema),
       },
       {
         name: 'start_recording',
         description: TOOL_CONFIGS.start_recording.description,
-        inputSchema: StartRecordingInputSchema,
+        inputSchema: zodToJsonSchema(StartRecordingInputSchema),
       },
       {
         name: 'get_diff_since_start',
         description: TOOL_CONFIGS.get_diff_since_start.description,
-        inputSchema: GetDiffSinceStartInputSchema,
+        inputSchema: zodToJsonSchema(GetDiffSinceStartInputSchema),
       },
     ],
   }));
