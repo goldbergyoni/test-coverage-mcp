@@ -1,0 +1,7 @@
+# MCP Layer
+
+MCP protocol implementation for exposing coverage tools to AI agents.
+
+## What's inside
+- **server.ts** - MCP server setup and tool registration (coverage_summary, coverage_file_summary)
+- **handlers.ts** - Tool request handlers that orchestrate core coverage operations

@@ -34,108 +34,78 @@ export const CoverageFileSummaryInputSchema = z.object({
     .describe('File path to get coverage for')
 });
 
-/**
- * Schema for start_coverage_record tool input
- */
-export const StartRecordingInputSchema = z.object({
-  lcovPath: z
-    .string()
-    .optional()
-    .describe('Path to the LCOV coverage file to snapshot. Defaults to ./coverage/lcov.info')
-});
-
-/**
- * Schema for end_coverage_record tool input
- */
-export const EndRecordingInputSchema = z.object({
-  recordingId: z
-    .string()
-    .uuid()
-    .describe('The recording ID returned from start_coverage_record'),
-  lcovPath: z
-    .string()
-    .optional()
-    .describe('Path to the current LCOV coverage file. Defaults to ./coverage/lcov.info')
-});
-
 // ============================================================================
 // Output Schemas
 // ============================================================================
 
 /**
- * Basic coverage info structure
+ * Schema for coverage_summary tool response (overall coverage only)
  */
-const CoverageInfoSchema = z.object({
+export const CoverageSummaryResponseSchema = z.object({
   linesCoveragePercentage: z
     .number()
     .min(0)
     .max(100)
-    .describe('Line coverage percentage (0-100)')
+    .describe('Line coverage percentage (0-100)'),
+  branchesCoveragePercentage: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe('Branch coverage percentage (0-100). Returns 0 if no branch data.')
 });
 
 /**
- * File coverage info structure
+ * Schema for coverage_file_summary tool response (single file coverage)
  */
-const FileCoverageInfoSchema = z.object({
+export const CoverageFileSummaryResponseSchema = z.object({
   path: z.string().describe('File path'),
-  coverageInfo: CoverageInfoSchema
+  linesCoveragePercentage: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe('Line coverage percentage (0-100)'),
+  branchesCoveragePercentage: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe('Branch coverage percentage (0-100). Returns 0 if no branch data.')
 });
 
 /**
- * Schema for coverage_summary tool output (overall coverage only)
+ * Schema for start_recording tool input
  */
-export const CoverageSummaryOutputSchema = CoverageInfoSchema;
-
-/**
- * Schema for coverage_file_summary tool output (single file coverage)
- */
-export const CoverageFileSummaryOutputSchema = FileCoverageInfoSchema;
-
-/**
- * Schema for start_coverage_record tool output
- */
-export const StartRecordingOutputSchema = z.object({
-  recordingId: z
+export const StartRecordingInputSchema = z.object({
+  lcovPath: z
     .string()
-    .uuid()
-    .describe('Unique identifier for this recording session'),
-  timestamp: z
-    .number()
-    .describe('Unix timestamp in milliseconds when recording was started'),
-  baselineCoverage: CoverageInfoSchema.describe('Overall coverage at recording start')
+    .describe('Absolute or relative path to the LCOV coverage file to record as baseline (e.g., \'coverage/lcov.info\' or \'./coverage.lcov\')')
 });
 
 /**
- * File change info for recording comparison
+ * Schema for start_recording tool response
  */
-const FileChangeSchema = z.object({
-  path: z.string().describe('File path'),
-  beforePercentage: z.number().min(0).max(100).describe('Coverage when recording started'),
-  afterPercentage: z.number().min(0).max(100).describe('Current coverage'),
-  changePercentage: z.number().describe('Percentage point change (can be negative)')
+export const StartRecordingResponseSchema = z
+  .string()
+  .describe('Success message confirming recording started');
+
+/**
+ * Schema for get_diff_since_start tool input
+ */
+export const GetDiffSinceStartInputSchema = z.object({
+  lcovPath: z
+    .string()
+    .describe('Absolute or relative path to the current LCOV coverage file to compare against baseline (e.g., \'coverage/lcov.info\')')
 });
 
 /**
- * Schema for end_coverage_record tool output
+ * Schema for get_diff_since_start tool response
  */
-export const EndRecordingOutputSchema = z.object({
-  before: CoverageInfoSchema.describe('Coverage when recording started'),
-  after: CoverageInfoSchema.describe('Current coverage'),
-  changeInPercentage: z
+export const GetDiffSinceStartResponseSchema = z.object({
+  linesPercentageImpact: z
     .number()
-    .describe('Percentage point change in coverage (can be negative)'),
-  fileChanges: z
-    .array(FileChangeSchema)
-    .optional()
-    .describe('Per-file coverage changes, sorted by largest change first'),
-  newFiles: z
-    .array(z.string())
-    .optional()
-    .describe('Files added to coverage since recording started'),
-  removedFiles: z
-    .array(z.string())
-    .optional()
-    .describe('Files removed from coverage since recording started')
+    .describe('Change in line coverage percentage (current minus baseline). Positive = improvement, negative = regression.'),
+  branchesPercentageImpact: z
+    .number()
+    .describe('Change in branch coverage percentage (current minus baseline). Positive = improvement, negative = regression.')
 });
 
 // ============================================================================
@@ -145,14 +115,12 @@ export const EndRecordingOutputSchema = z.object({
 export type CoverageSummaryInput = z.infer<typeof CoverageSummaryInputSchema>;
 export type CoverageFileSummaryInput = z.infer<typeof CoverageFileSummaryInputSchema>;
 export type StartRecordingInput = z.infer<typeof StartRecordingInputSchema>;
-export type EndRecordingInput = z.infer<typeof EndRecordingInputSchema>;
+export type GetDiffSinceStartInput = z.infer<typeof GetDiffSinceStartInputSchema>;
 
-export type CoverageInfo = z.infer<typeof CoverageInfoSchema>;
-export type FileCoverageInfo = z.infer<typeof FileCoverageInfoSchema>;
-export type CoverageSummaryOutput = z.infer<typeof CoverageSummaryOutputSchema>;
-export type CoverageFileSummaryOutput = z.infer<typeof CoverageFileSummaryOutputSchema>;
-export type StartRecordingOutput = z.infer<typeof StartRecordingOutputSchema>;
-export type EndRecordingOutput = z.infer<typeof EndRecordingOutputSchema>;
+export type CoverageSummaryResponse = z.infer<typeof CoverageSummaryResponseSchema>;
+export type CoverageFileSummaryResponse = z.infer<typeof CoverageFileSummaryResponseSchema>;
+export type StartRecordingResponse = z.infer<typeof StartRecordingResponseSchema>;
+export type GetDiffSinceStartResponse = z.infer<typeof GetDiffSinceStartResponseSchema>;
 
 // ============================================================================
 // Tool Registration Helpers
@@ -172,14 +140,14 @@ export const TOOL_CONFIGS = {
     description: 'Analyzes an LCOV coverage file and returns line coverage percentage for a specific file. Use this to check coverage for individual files.',
     inputSchema: CoverageFileSummaryInputSchema
   },
-  start_coverage_record: {
-    title: 'Start Coverage Recording',
-    description: 'Creates a snapshot of the current coverage state for later comparison. Use this before making code changes to track coverage impact. Returns a recording ID that must be provided to end_coverage_record.',
+  start_recording: {
+    title: 'Start Recording Coverage Baseline',
+    description: 'Records the current coverage as a baseline snapshot. Use this before making code changes to later compare against.',
     inputSchema: StartRecordingInputSchema
   },
-  end_coverage_record: {
-    title: 'End Coverage Recording and Compare',
-    description: 'Compares current coverage against a previously created recording and returns the difference. Shows overall coverage change and per-file changes. Use this after making code changes to measure coverage impact.',
-    inputSchema: EndRecordingInputSchema
-  }
+  get_diff_since_start: {
+    title: 'Get Coverage Diff Since Recording',
+    description: 'Compares current coverage against the recorded baseline and returns the impact (positive or negative). Use this after making changes to see coverage impact.',
+    inputSchema: GetDiffSinceStartInputSchema
+  },
 } as const;

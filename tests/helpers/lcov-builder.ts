@@ -8,6 +8,8 @@ type FileSpec = {
   path?: string;
   lines: number;
   coveredLines?: number[];
+  branches?: number;
+  coveredBranches?: number[];
 };
 
 const tempFiles: string[] = [];
@@ -32,10 +34,30 @@ const buildLinesSection = (totalLines: number, coveredLines: number[]): string =
   return lineEntries.join('\n');
 };
 
+const buildBranchEntry = (branchNumber: number, isCovered: boolean): string => {
+  const taken = isCovered ? 1 : 0;
+  const line = branchNumber + 1;
+  const block = 0;
+  const branch = branchNumber % 2;
+  return `BRDA:${line},${block},${branch},${taken}`;
+};
+
+const buildBranchesSection = (totalBranches: number, coveredBranches: number[]): string => {
+  const branchEntries = Array.from({ length: totalBranches }, (_, i) => {
+    const branchNumber = i + 1;
+    const isCovered = coveredBranches.includes(branchNumber);
+    return buildBranchEntry(branchNumber, isCovered);
+  });
+
+  return branchEntries.join('\n');
+};
+
 type NormalizedFileSpec = {
   path: string;
   lines: number;
   coveredLines: number[];
+  branches: number;
+  coveredBranches: number[];
 };
 
 const generateFilePath = (): string => {
@@ -46,12 +68,15 @@ const generateFilePath = (): string => {
 
 const buildFileSection = (file: NormalizedFileSpec): string => {
   const linesSection = buildLinesSection(file.lines, file.coveredLines);
+  const branchesSection = file.branches > 0
+    ? `\n${buildBranchesSection(file.branches, file.coveredBranches)}\nBRF:${file.branches}\nBRH:${file.coveredBranches.length}`
+    : '';
 
   return `TN:
 SF:${file.path}
 ${linesSection}
 LF:${file.lines}
-LH:${file.coveredLines.length}
+LH:${file.coveredLines.length}${branchesSection}
 end_of_record`;
 };
 
@@ -72,13 +97,27 @@ const allLinesCovered = (totalLines: number): number[] => {
   return Array.from({ length: totalLines }, (_, i) => i + 1);
 };
 
+const allBranchesCovered = (totalBranches: number): number[] => {
+  return Array.from({ length: totalBranches }, (_, i) => i + 1);
+};
+
 export const createLcovFile = async (files: FileSpec[]): Promise<string> => {
   const normalizedFiles = files.map(file => ({
     path: file.path ?? generateFilePath(),
     lines: file.lines,
-    coveredLines: file.coveredLines ?? allLinesCovered(file.lines)
+    coveredLines: file.coveredLines ?? allLinesCovered(file.lines),
+    branches: file.branches ?? 0,
+    coveredBranches: file.coveredBranches ?? (file.branches ? allBranchesCovered(file.branches) : [])
   }));
 
   const content = buildLcovContent(normalizedFiles);
   return writeToTempFile(content);
+};
+
+export const createDefaultLcovFile = async (): Promise<string> => {
+  return createLcovFile([{ lines: 3, coveredLines: [1, 2] }]);
+};
+
+export const generateNonExistentPath = (): string => {
+  return faker.system.filePath();
 };

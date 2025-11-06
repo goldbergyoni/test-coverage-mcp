@@ -1,0 +1,8 @@
+# Core Coverage Logic
+
+Business logic for parsing LCOV files and calculating coverage metrics.
+
+## What's inside
+- **coverage/** - LCOV parsing, path resolution, and coverage calculation
+- **recording/** - Coverage snapshot types for before/after comparisons
+- **errors.ts** - Custom error types with error codes

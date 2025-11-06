@@ -1,0 +1,143 @@
+{
+  "$schema": "https://spec.modelcontextprotocol.io/draft/2024-11/schema/tools.json",
+  "description": "MCP tool contracts for Coverage Diff Tracking feature",
+  "tools": [
+    {
+      "name": "start_recording",
+      "description": "Record the current test coverage as a baseline snapshot for future comparison. This copies the LCOV file to a recording folder, replacing any previous snapshot. Call this before making code changes to establish a baseline.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lcovPath": {
+            "type": "string",
+            "description": "Absolute or relative path to the LCOV coverage file to record as baseline (e.g., 'coverage/lcov.info' or './coverage.lcov')"
+          }
+        },
+        "required": ["lcovPath"]
+      },
+      "outputSchema": {
+        "type": "string",
+        "description": "Success message confirming recording started",
+        "example": "Recording started"
+      },
+      "errors": [
+        {
+          "code": "LCOV_FILE_NOT_FOUND",
+          "message": "The specified LCOV file does not exist at the provided path"
+        },
+        {
+          "code": "INVALID_LCOV_FORMAT",
+          "message": "The LCOV file exists but cannot be parsed (corrupted or invalid format)"
+        }
+      ]
+    },
+    {
+      "name": "get_diff_since_start",
+      "description": "Calculate the difference between current test coverage and the recorded baseline snapshot. Returns positive values for coverage improvements and negative values for coverage decreases. Must call start_recording first to establish a baseline.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lcovPath": {
+            "type": "string",
+            "description": "Absolute or relative path to the current LCOV coverage file to compare against baseline (e.g., 'coverage/lcov.info')"
+          }
+        },
+        "required": ["lcovPath"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "linesPercentageImpact": {
+            "type": "number",
+            "description": "Change in line coverage percentage (current minus baseline). Positive = improvement, negative = regression.",
+            "example": 12.5
+          },
+          "branchesPercentageImpact": {
+            "type": "number",
+            "description": "Change in branch coverage percentage (current minus baseline). Positive = improvement, negative = regression.",
+            "example": -3.2
+          }
+        },
+        "required": ["linesPercentageImpact", "branchesPercentageImpact"]
+      },
+      "errors": [
+        {
+          "code": "NO_RECORDING_FOUND",
+          "message": "No baseline snapshot found. Call start_recording first."
+        },
+        {
+          "code": "LCOV_FILE_NOT_FOUND",
+          "message": "The current LCOV file does not exist at the provided path"
+        },
+        {
+          "code": "INVALID_LCOV_FORMAT",
+          "message": "The LCOV file exists but cannot be parsed (corrupted or invalid format)"
+        }
+      ]
+    }
+  ],
+  "enhancedTools": [
+    {
+      "name": "coverage_summary",
+      "description": "Enhanced to return both line and branch coverage percentages",
+      "changes": {
+        "outputSchema": {
+          "before": {
+            "type": "object",
+            "properties": {
+              "linesCoveragePercentage": {
+                "type": "number"
+              }
+            }
+          },
+          "after": {
+            "type": "object",
+            "properties": {
+              "linesCoveragePercentage": {
+                "type": "number",
+                "description": "Percentage of lines covered by tests (0-100)"
+              },
+              "branchesCoveragePercentage": {
+                "type": "number",
+                "description": "Percentage of branches covered by tests (0-100). Returns 0 if no branch data."
+              }
+            }
+          }
+        },
+        "backwardCompatible": true,
+        "notes": "Existing field linesCoveragePercentage unchanged. New field branchesCoveragePercentage added."
+      }
+    },
+    {
+      "name": "file_coverage",
+      "description": "Enhanced to return both line and branch coverage percentages for specific files",
+      "changes": {
+        "outputSchema": {
+          "before": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": { "type": "string" },
+                "linesCoveragePercentage": { "type": "number" }
+              }
+            }
+          },
+          "after": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": { "type": "string" },
+                "linesCoveragePercentage": { "type": "number" },
+                "branchesCoveragePercentage": { "type": "number" }
+              }
+            }
+          }
+        },
+        "backwardCompatible": true,
+        "notes": "Each file entry now includes branchesCoveragePercentage in addition to linesCoveragePercentage"
+      }
+    }
+  ]
+}

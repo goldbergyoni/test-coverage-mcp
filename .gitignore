@@ -34,3 +34,7 @@ Thumbs.db
 *.log
 tmp/
 temp/
+
+# Secrets
+.mcpregistry_github_token
+.mcpregistry_registry_token

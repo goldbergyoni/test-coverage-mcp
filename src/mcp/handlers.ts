@@ -1,27 +1,32 @@
-import { resolveLcovPath } from '../core/coverage/path-resolver.js';
-import { parseLcovFile } from '../core/coverage/parser.js';
-import { calculateOverallCoverage, calculateFileCoverage } from '../core/coverage/calculator.js';
-import { CoverageError } from '../core/errors.js';
-import { CoverageSummaryInput, CoverageFileSummaryInput } from '../schemas/tool-schemas.js';
+import { CoverageError } from "../core/errors.js";
+import {
+  CoverageSummaryInput,
+  CoverageFileSummaryInput,
+  StartRecordingInput,
+  GetDiffSinceStartInput,
+} from "../schemas/tool-schemas.js";
+import {
+  getOverallCoverageSummary,
+  getFileCoverageSummary,
+  startCoverageRecording,
+  getCoverageDiffSinceStart,
+} from "../core/coverage/facade.js";
 
 export const handleCoverageSummary = async (input: CoverageSummaryInput) => {
   try {
-    const lcovPath = await resolveLcovPath(input.lcovPath);
-    const sections = await parseLcovFile(lcovPath);
-    const coverage = calculateOverallCoverage(sections);
-
+    const coverage = await getOverallCoverageSummary(input.lcovPath);
     return {
-      content: [{ type: 'text' as const, text: JSON.stringify(coverage) }],
+      content: [{ type: "text" as const, text: JSON.stringify(coverage) }],
     };
   } catch (error) {
     const coverageError = error as CoverageError;
     return {
       content: [
         {
-          type: 'text' as const,
+          type: "text" as const,
           text: JSON.stringify({
             error: coverageError.code,
-            message: coverageError.message
+            message: coverageError.message,
           }),
         },
       ],
@@ -30,24 +35,76 @@ export const handleCoverageSummary = async (input: CoverageSummaryInput) => {
   }
 };
 
-export const handleFileCoverageSummary = async (input: CoverageFileSummaryInput) => {
+export const handleFileCoverageSummary = async (
+  input: CoverageFileSummaryInput
+) => {
   try {
-    const lcovPath = await resolveLcovPath(input.lcovPath);
-    const sections = await parseLcovFile(lcovPath);
-    const coverage = calculateFileCoverage(sections, input.filePath);
-
+    const coverage = await getFileCoverageSummary(
+      input.lcovPath,
+      input.filePath
+    );
     return {
-      content: [{ type: 'text' as const, text: JSON.stringify(coverage) }],
+      content: [{ type: "text" as const, text: JSON.stringify(coverage) }],
     };
   } catch (error) {
     const coverageError = error as CoverageError;
     return {
       content: [
         {
-          type: 'text' as const,
+          type: "text" as const,
           text: JSON.stringify({
             error: coverageError.code,
-            message: coverageError.message
+            message: coverageError.message,
+          }),
+        },
+      ],
+      isError: true,
+    };
+  }
+};
+
+export const handleStartRecording = async (input: StartRecordingInput) => {
+  try {
+    console.error("Tool handler: Starting recording", input.lcovPath);
+    await startCoverageRecording(input.lcovPath);
+    return {
+      content: [{ type: "text" as const, text: '"Recording started"' }],
+    };
+  } catch (error) {
+    const coverageError = error as CoverageError;
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify({
+            error: coverageError.code,
+            message: coverageError.message,
+          }),
+        },
+      ],
+      isError: true,
+    };
+  }
+};
+
+export const handleGetDiffSinceStart = async (
+  input: GetDiffSinceStartInput
+) => {
+  console.error("Tool handler: Getting diff", input.lcovPath);
+  try {
+    const diff = await getCoverageDiffSinceStart(input.lcovPath);
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(diff) }],
+    };
+  } catch (error) {
+    const coverageError = error as CoverageError;
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify({
+            error: coverageError.code,
+            message: coverageError.message,
           }),
         },
       ],

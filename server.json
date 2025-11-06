@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "io.github.goldbergyoni/test-coverage-mcp",
+  "description": "Analyze test coverage from LCOV files - makes AI agents coverage-aware without wasting tokens",
+  "repository": {
+    "url": "https://github.com/goldbergyoni/test-coverage-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "test-coverage-mcp",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
