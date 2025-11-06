@@ -1,0 +1,27 @@
+# Development and tooling
+.specify/
+.claude/
+specs/
+tests/
+*.test.ts
+vitest.config.ts
+tsconfig.json
+eslint.config.js
+
+# Source files (we only want dist/)
+src/
+
+# IDE
+.vscode/
+.cursor/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Misc
+*.log
+coverage/
+node_modules/
+.DS_Store
