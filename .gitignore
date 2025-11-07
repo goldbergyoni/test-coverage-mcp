@@ -10,7 +10,7 @@ build/
 *.tsbuildinfo
 
 # Coverage
-coverage/
+/coverage/
 *.lcov
 .nyc_output/
 

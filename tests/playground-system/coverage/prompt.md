@@ -1,0 +1,1 @@
+The calculator.test.js is fine, but it's not covering all the code that it should. Can you please improve it to cover everything? Let me know how much coverage you increased. What was before and what is after. Please use the test coverage MCP.
