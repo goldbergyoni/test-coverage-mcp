@@ -1,27 +1,63 @@
-# Development and tooling
-.specify/
-.claude/
-specs/
-tests/
-*.test.ts
-vitest.config.ts
-tsconfig.json
-eslint.config.js
-
-# Source files (we only want dist/)
+# Source files (compiled version is in dist/)
 src/
+tsconfig.json
 
-# IDE
+# Tests
+tests/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Development files
+.eslintrc
+.eslintrc.*
+eslint.config.js
+vitest.config.ts
+vitest.config.js
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+
+# Development dependencies
+node_modules/
+
+# IDE and editor files
 .vscode/
 .cursor/
 .idea/
+*.swp
+*.swo
+*~
 
-# Git
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git files
 .git/
 .gitignore
+.gitattributes
 
-# Misc
+# CI/CD
+.github/
+
+# Temporary files
+tmp/
+temp/
 *.log
-coverage/
-node_modules/
-.DS_Store
+
+# Environment and secrets
+.env
+.env.*
+.mcpregistry_github_token
+.mcpregistry_registry_token
+
+# Project-specific
+CLAUDE.md
+.specify/
+.claude/
+specs/
+.nvmrc

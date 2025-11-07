@@ -1,0 +1,9 @@
+{
+  "name": "coverage-mcp-playground",
+  "version": "1.0.0",
+  "description": "Playground system to test coverage MCP with incomplete test coverage",
+  "type": "module",
+  "scripts": {
+    "test": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info"
+  }
+}

@@ -359,3 +359,11 @@ MIT © Yoni Goldberg
 - [npm Package](https://www.npmjs.com/package/test-coverage-mcp)
 - [MCP Documentation](https://modelcontextprotocol.io)
 - [Report Issues](https://github.com/goldbergyoni/test-coverage-mcp/issues)
+
+
+## Improvement ideas
+
+- coverage_file_summary returns nested properties also declared as flat
+- Start recording overrides other sessions files
+- Improve record naming - setSessionBaseline, getDiffSinceBaseline
+- 
