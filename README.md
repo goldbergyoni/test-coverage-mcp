@@ -3,9 +3,13 @@
 [![npm version](https://badge.fury.io/js/test-coverage-mcp.svg)](https://www.npmjs.com/package/test-coverage-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Make AI coding agents coverage-aware without wasting tokens**
+**Make AI coding agents coverage-aware without wasting tokens**
 
-A Model Context Protocol (MCP) server that gives AI coding agents instant, token-efficient access to test coverage data from LCOV files.
+> “Hey, I’m a coding agent. I just created flashy nifty feature… but oops, I downgraded the coverage 🤓. How could I know that?”
+
+> “Hey, I’m a testing agent. I was tasked to cover some code with testing, but how can I find which areas are not covered?😳”
+
+Give your coding and testing agent eyes: MCP server that provides instant, reliable, token-efficient test coverage data for any programming language (LCOV based)
 
 ## The Problem
 
@@ -360,10 +364,9 @@ MIT © Yoni Goldberg
 - [MCP Documentation](https://modelcontextprotocol.io)
 - [Report Issues](https://github.com/goldbergyoni/test-coverage-mcp/issues)
 
-
 ## Improvement ideas
 
 - coverage_file_summary returns nested properties also declared as flat
 - Start recording overrides other sessions files
 - Improve record naming - setSessionBaseline, getDiffSinceBaseline
-- 
+-

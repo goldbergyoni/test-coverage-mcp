@@ -16,7 +16,7 @@ describe('coverage_file_summary tool', () => {
 
     expect(result).toMatchObject({
       path: 'src/main.ts',
-      coverageInfo: { linesCoveragePercentage: 100 }
+      linesCoveragePercentage: 100
     });
   });
 
@@ -33,7 +33,7 @@ describe('coverage_file_summary tool', () => {
 
     expect(result).toMatchObject({
       path: 'src/utils.ts',
-      coverageInfo: { linesCoveragePercentage: 50 }
+      linesCoveragePercentage: 50
     });
   });
 
@@ -50,7 +50,7 @@ describe('coverage_file_summary tool', () => {
 
     expect(result).toMatchObject({
       path: 'src/empty.ts',
-      coverageInfo: { linesCoveragePercentage: 0 }
+      linesCoveragePercentage: 0
     });
   });
 
@@ -69,7 +69,7 @@ describe('coverage_file_summary tool', () => {
 
     expect(result).toMatchObject({
       path: 'src/utils.ts',
-      coverageInfo: { linesCoveragePercentage: 50 }
+      linesCoveragePercentage: 50
     });
   });
 
@@ -86,7 +86,7 @@ describe('coverage_file_summary tool', () => {
 
     expect(result).toMatchObject({
       path: 'src/notfound.ts',
-      coverageInfo: { linesCoveragePercentage: 0 }
+      linesCoveragePercentage: 0
     });
   });
 
@@ -103,10 +103,8 @@ describe('coverage_file_summary tool', () => {
 
     expect(result).toMatchObject({
       path: 'src/main.ts',
-      coverageInfo: {
-        linesCoveragePercentage: 75,
-        branchesCoveragePercentage: 50
-      }
+      linesCoveragePercentage: 75,
+      branchesCoveragePercentage: 50
     });
   });
 
@@ -123,10 +121,8 @@ describe('coverage_file_summary tool', () => {
 
     expect(result).toMatchObject({
       path: 'src/utils.ts',
-      coverageInfo: {
-        linesCoveragePercentage: 50,
-        branchesCoveragePercentage: 0
-      }
+      linesCoveragePercentage: 50,
+      branchesCoveragePercentage: 0
     });
   });
 
