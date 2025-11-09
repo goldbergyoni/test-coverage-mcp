@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/test-coverage-mcp.svg)](https://www.npmjs.com/package/test-coverage-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
-![CI](https://github.com/goldbergyoni/test-coverage-mcp/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/goldbergyoni/test-coverage-mcp/actions/workflows/test.yml/badge.svg)
 ![Last Commit](https://img.shields.io/github/last-commit/goldbergyoni/test-coverage-mcp)
 
 **Make AI coding agents coverage-aware without wasting tokens**
@@ -14,7 +14,9 @@
 
 Give your coding and testing agent eyes: MCP server that provides instant, reliable, token-efficient test coverage data for any programming language (LCOV based)
 
-🚀 Just launched (November 2025) ! I spend great time these days on polishing this library. If you find this valuable, a ⭐ star helps signal to other developers that this project is worth their attention
+__
+
+> 🚀 Just launched (November 2025) ! I spend great time these days on polishing this library. If you find this valuable, a ⭐ star helps signal to other developers that this project is worth their attention
 
 ## The Problem
 
