@@ -6,7 +6,7 @@
 ![CI](https://github.com/goldbergyoni/test-coverage-mcp/actions/workflows/test.yml/badge.svg)
 ![Last Commit](https://img.shields.io/github/last-commit/goldbergyoni/test-coverage-mcp)
 
-**Make AI coding agents coverage-aware without wasting tokens**
+**Make your agents coverage-aware as they code for you**
 
 > “Hey, I’m a coding agent. I just created flashy nifty feature… but oops, I downgraded the coverage 🤓. How could I know that?”
 
