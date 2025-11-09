@@ -2,6 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/test-coverage-mcp.svg)](https://www.npmjs.com/package/test-coverage-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
+![CI](https://github.com/goldbergyoni/test-coverage-mcp/actions/workflows/ci.yml/badge.svg)
+![Last Commit](https://img.shields.io/github/last-commit/goldbergyoni/test-coverage-mcp)
 
 **Make AI coding agents coverage-aware without wasting tokens**
 
@@ -11,12 +14,14 @@
 
 Give your coding and testing agent eyes: MCP server that provides instant, reliable, token-efficient test coverage data for any programming language (LCOV based)
 
+🚀 Just launched (November 2025) ! I spend great time these days on polishing this library. If you find this valuable, a ⭐ star helps signal to other developers that this project is worth their attention
+
 ## The Problem
 
 When AI coding agents work on your code without proper coverage tooling, they face three critical issues:
 
 1. **Coverage Blindness** - They can't see if their changes improved or regressed test coverage
-2. **Token Waste** - They burn thousands of tokens trying to parse massive LCOV files (some exceed 50MB)
+2. **Token Waste** - They burn thousands of tokens trying to parse massive LCOV files (some exceed 10 MB)
 3. **Unreliable Scripts** - They improvise custom parsing scripts that often fail or produce incorrect results
 
 ## The Solution
@@ -24,7 +29,7 @@ When AI coding agents work on your code without proper coverage tooling, they fa
 This MCP server solves all three problems by providing:
 
 - **Coverage Awareness** - Agents can check coverage anytime with a simple tool call
-- **Token Efficiency** - Get coverage summaries in <100 tokens instead of 10,000+
+- **Token Efficiency** - Get coverage summaries in <100 tokens instead of thousands
 - **Accuracy** - Production-grade LCOV parsing that handles all format variations
 - **Baseline Tracking** - Measure coverage progress within a session without keeping state in memory
 
