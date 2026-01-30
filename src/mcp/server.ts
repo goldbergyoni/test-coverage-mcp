@@ -7,6 +7,7 @@ import {
 import { zodToJsonSchema } from "zod-to-json-schema";
 import {
   CoverageFileSummaryInputSchema,
+  CoverageFilesSummaryInputSchema,
   CoverageSummaryInputSchema,
   GetDiffSinceStartInputSchema,
   StartRecordingInputSchema,
@@ -15,6 +16,7 @@ import {
 import {
   handleCoverageSummary,
   handleFileCoverageSummary,
+  handleMultiFileCoverageSummary,
   handleGetDiffSinceStart,
   handleStartRecording,
 } from "./handlers.js";
@@ -54,6 +56,14 @@ export const createServer = (): Server => {
         ),
       },
       {
+        name: "coverage_files_summary",
+        description: TOOL_CONFIGS.coverage_files_summary.description,
+        inputSchema: zodToJsonSchema(
+          CoverageFilesSummaryInputSchema,
+          MCP_SCHEMA_OPTIONS,
+        ),
+      },
+      {
         name: "start_recording",
         description: TOOL_CONFIGS.start_recording.description,
         inputSchema: zodToJsonSchema(
@@ -85,6 +95,13 @@ export const createServer = (): Server => {
         request.params.arguments,
       );
       return handleFileCoverageSummary(validatedInput);
+    }
+
+    if (request.params.name === "coverage_files_summary") {
+      const validatedInput = CoverageFilesSummaryInputSchema.parse(
+        request.params.arguments,
+      );
+      return handleMultiFileCoverageSummary(validatedInput);
     }
 
     if (request.params.name === "start_recording") {

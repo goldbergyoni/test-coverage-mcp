@@ -34,6 +34,19 @@ export const CoverageFileSummaryInputSchema = z.object({
     .describe('File path to get coverage for')
 });
 
+/**
+ * Schema for coverage_files_summary tool input (multiple files)
+ */
+export const CoverageFilesSummaryInputSchema = z.object({
+  lcovPath: z
+    .string()
+    .optional()
+    .describe('Path to the LCOV coverage file. Can be absolute or relative. Defaults to ./coverage/lcov.info'),
+  filePaths: z
+    .array(z.string())
+    .describe('Array of file paths to get coverage for')
+});
+
 // ============================================================================
 // Output Schemas
 // ============================================================================
@@ -70,6 +83,11 @@ export const CoverageFileSummaryResponseSchema = z.object({
     .max(100)
     .describe('Branch coverage percentage (0-100). Returns 0 if no branch data.')
 });
+
+/**
+ * Schema for coverage_files_summary tool response (multiple files coverage)
+ */
+export const CoverageFilesSummaryResponseSchema = z.array(CoverageFileSummaryResponseSchema);
 
 /**
  * Schema for start_recording tool input
@@ -114,11 +132,13 @@ export const GetDiffSinceStartResponseSchema = z.object({
 
 export type CoverageSummaryInput = z.infer<typeof CoverageSummaryInputSchema>;
 export type CoverageFileSummaryInput = z.infer<typeof CoverageFileSummaryInputSchema>;
+export type CoverageFilesSummaryInput = z.infer<typeof CoverageFilesSummaryInputSchema>;
 export type StartRecordingInput = z.infer<typeof StartRecordingInputSchema>;
 export type GetDiffSinceStartInput = z.infer<typeof GetDiffSinceStartInputSchema>;
 
 export type CoverageSummaryResponse = z.infer<typeof CoverageSummaryResponseSchema>;
 export type CoverageFileSummaryResponse = z.infer<typeof CoverageFileSummaryResponseSchema>;
+export type CoverageFilesSummaryResponse = z.infer<typeof CoverageFilesSummaryResponseSchema>;
 export type StartRecordingResponse = z.infer<typeof StartRecordingResponseSchema>;
 export type GetDiffSinceStartResponse = z.infer<typeof GetDiffSinceStartResponseSchema>;
 
@@ -139,6 +159,11 @@ export const TOOL_CONFIGS = {
     title: 'Get File Coverage Summary',
     description: 'Analyzes an LCOV coverage file and returns line coverage percentage for a specific file. Use this to check coverage for individual files.',
     inputSchema: CoverageFileSummaryInputSchema
+  },
+  coverage_files_summary: {
+    title: 'Get Multiple Files Coverage Summary',
+    description: 'Analyzes an LCOV coverage file and returns line and branch coverage percentages for multiple files at once. Use this when you need coverage for a set of files (e.g., files changed in a PR).',
+    inputSchema: CoverageFilesSummaryInputSchema
   },
   start_recording: {
     title: 'Start Recording Coverage Baseline',

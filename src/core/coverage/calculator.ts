@@ -61,6 +61,10 @@ export const calculateFileCoverage = (sections: LcovSection[], filePath: string)
   };
 };
 
+export const calculateMultiFileCoverage = (sections: LcovSection[], filePaths: string[]): FileCoverageInfo[] => {
+  return filePaths.map(filePath => calculateFileCoverage(sections, filePath));
+};
+
 export const extractBranchCoverage = (sections: LcovSection[]): number => {
   if (sections.length === 0) {
     return 0;
