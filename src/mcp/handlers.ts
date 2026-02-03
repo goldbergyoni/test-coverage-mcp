@@ -2,12 +2,14 @@ import { CoverageError } from "../core/errors.js";
 import {
   CoverageSummaryInput,
   CoverageFileSummaryInput,
+  CoverageFilesSummaryInput,
   StartRecordingInput,
   GetDiffSinceStartInput,
 } from "../schemas/tool-schemas.js";
 import {
   getOverallCoverageSummary,
   getFileCoverageSummary,
+  getMultiFileCoverageSummary,
   startCoverageRecording,
   getCoverageDiffSinceStart,
 } from "../core/coverage/facade.js";
@@ -42,6 +44,34 @@ export const handleFileCoverageSummary = async (
     const coverage = await getFileCoverageSummary(
       input.lcovPath,
       input.filePath
+    );
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(coverage) }],
+    };
+  } catch (error) {
+    const coverageError = error as CoverageError;
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify({
+            error: coverageError.code,
+            message: coverageError.message,
+          }),
+        },
+      ],
+      isError: true,
+    };
+  }
+};
+
+export const handleMultiFileCoverageSummary = async (
+  input: CoverageFilesSummaryInput
+) => {
+  try {
+    const coverage = await getMultiFileCoverageSummary(
+      input.lcovPath,
+      input.filePaths
     );
     return {
       content: [{ type: "text" as const, text: JSON.stringify(coverage) }],

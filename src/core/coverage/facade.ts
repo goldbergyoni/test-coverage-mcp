@@ -3,6 +3,7 @@ import { parseLcovFile } from "./parser.js";
 import {
   calculateOverallCoverage,
   calculateFileCoverage,
+  calculateMultiFileCoverage,
 } from "./calculator.js";
 import { recordBaseline } from "./recorder.js";
 import { calculateDiffSinceRecording } from "./diff-calculator.js";
@@ -23,6 +24,15 @@ export const getFileCoverageSummary = async (
   const resolvedPath = await resolveLcovPath(lcovPath);
   const sections = await parseLcovFile(resolvedPath);
   return calculateFileCoverage(sections, filePath);
+};
+
+export const getMultiFileCoverageSummary = async (
+  lcovPath: string | undefined,
+  filePaths: string[]
+): Promise<FileCoverageInfo[]> => {
+  const resolvedPath = await resolveLcovPath(lcovPath);
+  const sections = await parseLcovFile(resolvedPath);
+  return calculateMultiFileCoverage(sections, filePaths);
 };
 
 export const startCoverageRecording = async (
