@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 <!-- OPENSPEC:START -->
 # OpenSpec Instructions
 
@@ -17,56 +21,78 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
 
-# coverage-mcp-v2 Development Guidelines
+## Project Overview
 
-Auto-generated from all feature plans. Last updated: 2025-10-21
-
-## Active Technologies
-- Node.js with TypeScript (no interfaces, use types) (001-mcp-coverage-tool)
-- TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser (001-mcp-coverage-tool)
-- Temporary filesystem storage for coverage recordings (001-mcp-coverage-tool)
-- TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser, Node.js fs module (002-coverage-diff-tracking)
-- Local filesystem (recording folder for snapshots) (002-coverage-diff-tracking)
-
-## Project Structure
-```
-src/
-tests/
-```
+MCP server providing token-efficient LCOV-based test coverage data for AI coding agents. Exposes 5 tools: `coverage_summary`, `coverage_file_summary`, `coverage_files_summary`, `start_recording`, `get_diff_since_start`.
 
 ## Commands
-npm test && npm run lint
+
+```bash
+npm run build          # Compile TypeScript to dist/
+npm test               # Run all tests
+npm run test:watch     # Run tests in watch mode
+npm run test:coverage  # Run tests with coverage report
+npm run lint           # Run ESLint
+npm run inspect        # Launch MCP inspector for debugging
+
+# Run a single test file
+npx vitest tests/summary.test.ts
+
+# Run a single test by name
+npx vitest -t "when all lines are covered"
+```
+
+## Architecture
+
+### Two-Layer Design
+
+**Entry Point Layer (`src/mcp/`)** - Thin adapters that:
+1. Validate input via Zod schemas
+2. Delegate to exactly ONE core function
+3. Format response for MCP protocol
+
+Entry points MUST NOT orchestrate multiple core functions, perform file operations, or contain business logic.
+
+**Core Layer (`src/core/`)** - All business logic lives here:
+- `facade.ts` - Orchestration functions (the single functions entry points call)
+- `parser.ts` - LCOV file parsing using `@friedemannsommer/lcov-parser`
+- `calculator.ts` - Coverage percentage calculations
+- `recorder.ts` - Baseline storage in `./recording/`
+- `diff-calculator.ts` - Compare current vs baseline coverage
+
+### Key Files
+
+- `src/mcp/server.ts` - MCP server setup, tool registration with inline JSON schemas
+- `src/mcp/handlers.ts` - Request handlers that call facade functions
+- `src/schemas/tool-schemas.ts` - Zod schemas and tool configurations
+
+## Testing
+
+**Integration tests only** - No unit tests. Tests call the MCP server as a real client would.
+
+**Test helpers:**
+- `tests/helpers/mcp-client.ts` - Creates in-memory MCP client, provides `callTool()` and `callToolExpectingError()`
+- `tests/helpers/lcov-builder.ts` - Factory for generating LCOV test data with auto-cleanup
+
+**Test naming:** Use "when-then" pattern: `when [scenario], then [expectation]`
+
+**Pattern:** Flat AAA (Arrange-Act-Assert), no loops or conditionals, tests under 10 lines.
 
 ## Code Style
-Node.js with TypeScript (no interfaces, use types): Follow standard conventions
 
-## Architecture Principles
+- TypeScript: Use `type`, NOT `interface`
+- Baselines stored in `./recording/baseline-recording.lcov`
+- Default LCOV path: `./coverage/lcov.info`
 
-### Entry Point Layer (MCP/CLI/API)
-Entry points are **thin adapters** that do ONLY:
-1. **Input validation** (via Zod schemas - validation happens implicitly during parsing)
-2. **Single core function call** - delegate to exactly ONE core function
-3. **Response formatting** - convert core result to protocol format (e.g., MCP response)
+## Error Codes
 
-Entry points MUST NOT:
-- Orchestrate multiple core functions
-- Perform file operations
-- Execute calculations or business logic
-- Contain any domain knowledge
+Custom `CoverageError` class in `src/core/errors.ts` with codes:
+- `LCOV_FILE_NOT_FOUND` - LCOV file path doesn't exist
+- `LCOV_PARSE_ERROR` - Failed to parse LCOV content
+- `FILE_NOT_IN_COVERAGE` - Requested file not found in LCOV data
+- `NO_RECORDING_FOUND` - `get_diff_since_start` called without `start_recording`
+- `PATH_RESOLUTION_ERROR` - Path resolution failed
 
-### Core Layer (src/core/)
-All business logic, orchestration, file operations, and calculations live here:
-- **Orchestration functions** coordinate multiple lower-level operations
-- **Domain logic** implements business rules and calculations
-- **File operations** handle all filesystem access
-- Core functions are protocol-agnostic and independently testable
-
-## Recent Changes
-- 002-coverage-diff-tracking: Added TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser, Node.js fs module
-- 001-mcp-coverage-tool: Added TypeScript with Node.js (latest LTS) + @modelcontextprotocol/sdk, @friedemannsommer/lcov-parser
-- 001-mcp-coverage-tool: Added Node.js with TypeScript (no interfaces, use types)
-
-<!-- MANUAL ADDITIONS START -->
 ## References
-- [LCOV Format Guide](src/core/lcov_guide.md) - Detailed explanation of LCOV file format shortcuts
-<!-- MANUAL ADDITIONS END -->
+
+- [LCOV Format Guide](src/core/lcov_guide.md) - LCOV file format details

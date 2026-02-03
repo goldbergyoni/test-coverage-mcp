@@ -4,6 +4,7 @@ import { createServer } from '../../src/mcp/server.js';
 import type {
   CoverageSummaryOutput,
   CoverageFileSummaryOutput,
+  CoverageFilesSummaryResponse,
   StartRecordingOutput,
   GetDiffSinceStartOutput,
 } from '../../src/schemas/tool-schemas.js';
@@ -11,6 +12,7 @@ import type {
 type ToolResultMap = {
   coverage_summary: CoverageSummaryOutput;
   coverage_file_summary: CoverageFileSummaryOutput;
+  coverage_files_summary: CoverageFilesSummaryResponse;
   start_recording: StartRecordingOutput;
   get_diff_since_start: GetDiffSinceStartOutput;
 };

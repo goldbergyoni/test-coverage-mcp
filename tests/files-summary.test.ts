@@ -86,4 +86,38 @@ describe('coverage_files_summary tool', () => {
       message: expect.any(String)
     });
   });
+
+  it('when file has zero instrumented lines, then returns 0% coverage', async () => {
+    const lcovPath = await createLcovFile([
+      { path: 'src/empty.ts', lines: 0, coveredLines: [] },
+      { path: 'src/main.ts', lines: 4, coveredLines: [1, 2, 3, 4] }
+    ]);
+    const client = await createMCPClient();
+
+    const result = await client.callTool('coverage_files_summary', {
+      lcovPath,
+      filePaths: ['src/empty.ts', 'src/main.ts']
+    });
+
+    expect(result).toEqual([
+      { path: 'src/empty.ts', linesCoveragePercentage: 0, branchesCoveragePercentage: 0 },
+      { path: 'src/main.ts', linesCoveragePercentage: 100, branchesCoveragePercentage: 0 }
+    ]);
+  });
+
+  it('when requesting single file, then returns array with one element', async () => {
+    const lcovPath = await createLcovFile([
+      { path: 'src/single.ts', lines: 2, coveredLines: [1] }
+    ]);
+    const client = await createMCPClient();
+
+    const result = await client.callTool('coverage_files_summary', {
+      lcovPath,
+      filePaths: ['src/single.ts']
+    });
+
+    expect(result).toEqual([
+      { path: 'src/single.ts', linesCoveragePercentage: 50, branchesCoveragePercentage: 0 }
+    ]);
+  });
 });
